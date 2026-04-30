@@ -1,0 +1,83 @@
+#smartsaver-injected-banner {
+  all: initial;
+  display: block;
+  width: 100%;
+  height: 60px;
+  background-color: #0a0a0a !important;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif !important;
+  position: relative;
+  z-index: 2147483647; /* Ensure it stays on top */
+  border-bottom: 2px solid #10b981;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.smartsaver-flex {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 24px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.smartsaver-logo {
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  letter-spacing: -1px !important;
+}
+
+.smartsaver-logo span {
+  color: #10b981 !important;
+  font-style: italic !important;
+}
+
+.smartsaver-msg {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: rgba(255,255,255,0.8) !important;
+}
+
+.smartsaver-msg strong {
+  color: #10b981 !important;
+  font-weight: 900 !important;
+}
+
+.smartsaver-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+#smartsaver-activate-btn {
+  background: #10b981 !important;
+  color: #0a0a0a !important;
+  border: none !important;
+  padding: 8px 20px !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+#smartsaver-activate-btn:hover {
+  background: #34d399 !important;
+  transform: translateY(-1px) !important;
+}
+
+#smartsaver-close {
+  background: none !important;
+  border: none !important;
+  color: rgba(255,255,255,0.2) !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  padding: 0 8px !important;
+}
+
+#smartsaver-close:hover {
+  color: #fff !important;
+}

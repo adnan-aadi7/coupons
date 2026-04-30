@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartSaver Popup</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app" class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-text">Smart<span class="logo-accent">Saver</span></span>
+      </div>
+      <div id="status-badge" class="status-badge">
+        <div class="pulse"></div>
+        <span id="store-name">Searching...</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div id="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Finding the magic...</p>
+      </div>
+
+      <div id="content" class="content-state hidden">
+        <div class="deal-highlight">
+          <h1 id="coupon-count">0</h1>
+          <p>Verified Offers Found</p>
+        </div>
+
+        <button id="apply-btn" class="primary-btn">
+          <span>Apply Best Coupon</span>
+          <svg class="zap-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </button>
+
+        <div class="cashback-banner">
+          <div class="cashback-info">
+            <span class="cashback-label">Cashback Available</span>
+            <span id="cashback-value" class="cashback-amount">5.0% BACK</span>
+          </div>
+          <button id="activate-btn" class="secondary-btn">Activate</button>
+        </div>
+      </div>
+
+      <div id="no-deals" class="no-deals-state hidden">
+        <p>No coupons found for this store yet.</p>
+        <button id="browse-btn" class="text-link">Browse All Stores</button>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="user-stats">
+        <span>Lifetime Savings:</span>
+        <span id="lifetime-savings">$124.50</span>
+      </div>
+      <button id="settings-btn" class="icon-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </button>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
