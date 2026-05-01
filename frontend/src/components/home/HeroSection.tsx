@@ -41,13 +41,13 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % carouselDeals.length);
-    }, 4500); // Rotate every 4.5 seconds
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="relative bg-[#F9F9F9] mt-20 overflow-hidden flex items-center min-h-[500px]">
-      <div className="max-w-[1280px] w-full mx-auto px-8 relative flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8">
+    <section className="relative bg-[#F9F9F9] mt-20 lg:mt-21 overflow-hidden flex items-center min-h-[500px] font-['Manrope'] ">
+      <div className="max-w-[1280px] w-full mx-auto px-8 relative flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8 py-12 lg:py-0">
 
         {/* Left Side: Typography & Search */}
         <div className="flex flex-col items-start gap-[31px] w-full max-w-[540px] shrink-0 z-20">
@@ -60,7 +60,7 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
           {/* Heading */}
           <div className="flex flex-col items-start pb-[0.7px]">
             <h1 className="font-['Manrope'] font-bold text-[48px] md:text-[56px] leading-[1.1] tracking-[-1.2px] text-[#1A1C1C]">
-              Shopping that <span className="text-[#8B5000] font-semibold drop-shadow-sm">grows</span><br />
+              Shopping that <span className="text-[#FF9800] font-semibold drop-shadow-sm">grows</span><br />
               your wealth.
             </h1>
           </div>
@@ -75,7 +75,7 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
           {/* Search & Scan Widget */}
           <div className="flex flex-col sm:flex-row items-center p-3 sm:p-[16px] gap-[16px] w-full bg-white/80 border border-white/40 backdrop-blur-[10px] rounded-3xl sm:rounded-[48px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-6px_rgba(0,0,0,0.1)] relative group">
 
-            {/* Input */}
+            {/* Input Placeholder (Simulated Search) */}
             <div className="flex-1 flex items-center justify-center h-[52.8px] bg-white/50 border-[2px] border-[#8B5000]/20 rounded-full transition-all group-hover:border-[#8B5000]/40 w-full sm:w-auto">
               <input
                 type="text"
@@ -87,7 +87,7 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
             {/* Scan Button */}
             <button
               onClick={onOpenScanner}
-              className="w-full sm:w-[179px] h-[52.8px] bg-[#1A1C1C] rounded-full flex items-center justify-center relative hover:bg-black transition-all cursor-pointer shrink-0"
+              className="w-full sm:w-[179px] h-[52.8px] bg-[#1A1C1C] rounded-full flex items-center justify-center relative hover:bg-black transition-all cursor-pointer shrink-0 shadow-lg shadow-black/20"
             >
               <div className="absolute left-[24px]">
                 <Scan className="w-5 h-5 text-white" />
@@ -99,8 +99,27 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
           </div>
         </div>
 
+        {/* 
+        COMMENTED OUT STATIC IMAGE
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative w-full max-w-[600px] z-10"
+        >
+          <div className="relative overflow-hidden p-3 group lg:mt-8">
+            <img
+              src="/png-05-e1755003916324.png"
+              alt="Mint Elite Deals"
+              className="w-full h-auto rounded-[32px] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+            <div className="absolute -inset-4 bg-gradient-to-tr from-[#FF9800]/10 to-transparent blur-3xl -z-10 rounded-full opacity-60" />
+          </div>
+        </motion.div>
+        */}
+
         {/* Right Side: Deals Carousel */}
-        <div className="relative w-full max-w-[600px] h-[380px] lg:h-[380px] z-10 w-full">
+        <div className="relative w-full max-w-[600px] h-[380px] lg:h-[380px] z-10">
           <AnimatePresence mode="popLayout">
             {carouselDeals.map((deal, index) => {
               if (index !== currentIndex) return null;
@@ -118,11 +137,8 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] group-hover:scale-105"
                     style={{ backgroundImage: `url('${deal.image}')` }}
                   />
-                  {/* Gradient Overlay to ensure text readability */}
+                  {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-
-                  {/* Decorative Elements inside card */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full translate-x-20 -translate-y-20 pointer-events-none" />
 
                   {/* Tag */}
                   <div className="absolute top-8 left-8 bg-black/30 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 flex items-center gap-2 shadow-lg">
@@ -130,14 +146,14 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
                     <span className="text-white text-xs font-bold uppercase tracking-widest font-['Manrope']">{deal.tag}</span>
                   </div>
 
-                  {/* Content Glass Pane */}
+                  {/* Content */}
                   <div className="relative z-10">
                     <div className="text-white/80 font-bold text-sm mb-1 uppercase tracking-widest font-['Manrope'] drop-shadow-md">{deal.store}</div>
                     <div className="text-white font-black text-3xl md:text-5xl mb-2 leading-tight tracking-tight font-['Manrope'] drop-shadow-lg">{deal.discount}</div>
                     <div className="text-white/90 text-sm md:text-lg mb-6 font-medium font-['Manrope'] drop-shadow-md">{deal.title}</div>
 
                     <button className="flex items-center gap-2 text-[#1A1C1C] font-bold bg-white/90 backdrop-blur-md hover:bg-white hover:scale-105 active:scale-95 transition-all px-6 py-3 rounded-full w-max shadow-xl font-['Manrope']">
-                      Claim Reward <ArrowRight className="w-4 h-4 text-[#8B5000]" />
+                      Claim Reward <ArrowRight className="w-4 h-4 text-[#FF9800]" />
                     </button>
                   </div>
                 </motion.div>
@@ -151,7 +167,7 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-[#8B5000] w-8' : 'bg-slate-300 hover:bg-slate-400 w-2.5'
+                className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-[#FF9800] w-8' : 'bg-slate-300 hover:bg-slate-400 w-2.5'
                   }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />

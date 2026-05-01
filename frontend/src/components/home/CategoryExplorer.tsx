@@ -57,9 +57,9 @@ const CATEGORIES = [
 
 export default function CategoryExplorer() {
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="bg-white">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <div>
@@ -70,10 +70,10 @@ export default function CategoryExplorer() {
               Discover premium rewards across every lifestyle category.
             </p>
           </div>
-          
+
           <div className="flex justify-center sm:justify-end">
-            <Link 
-              href="/categories" 
+            <Link
+              href="/categories"
               className="group flex items-center justify-center sm:justify-start gap-2 font-['Manrope'] font-bold text-[#8B5000] text-[15px] hover:text-[#FF9800] transition-colors"
             >
               Explore Directory <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
@@ -93,11 +93,11 @@ export default function CategoryExplorer() {
                 className="relative w-full h-[240px] md:h-[280px] rounded-[24px] md:rounded-[32px] overflow-hidden group cursor-pointer"
               >
                 {/* Background Image Setup */}
-                <div 
+                <div
                   className="absolute inset-0 bg-cover bg-center transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   style={{ backgroundImage: `url('${cat.image}')` }}
                 />
-                
+
                 {/* Gradient Overlay for Text Legibility */}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />

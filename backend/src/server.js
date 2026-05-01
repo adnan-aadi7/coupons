@@ -23,6 +23,7 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
 app.use('/api/track', require('./routes/trackRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
 
 app.get('/', (req, res) => {
   res.send('Coupon API is running...');

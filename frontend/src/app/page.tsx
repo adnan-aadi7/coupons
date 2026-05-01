@@ -1,10 +1,12 @@
-import HomePage from '@/components/home/HomePage';
+import HomePage from './home/page';
 
-/** Root page — assembles HomePage component */
+/** 
+ * Root page — Imports and renders the Home Page from the /home directory 
+ */
 export default function Home() {
   return (
-    <div className="bg-background">
+    <main className="bg-background">
       <HomePage />
-    </div>
+    </main>
   );
 }
