@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from 'framer-motion';
 import { Tag, Sparkles, Smartphone, ShieldCheck, Zap, ArrowRight, MousePointer2 } from 'lucide-react';
 import Link from 'next/link';
