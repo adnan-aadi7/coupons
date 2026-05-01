@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Tag, Zap, ShieldCheck, Download, CursorClick, CheckCircle2, Layout, Search, Sparkles } from 'lucide-react';
+import { Tag, Zap, ShieldCheck, Download, MousePointerClick, CheckCircle2, Layout, Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import GlassContainer from '@/components/ui/GlassContainer';
 
@@ -110,7 +110,7 @@ export default function ExtensionDisplay() {
                 className="absolute -top-12 -right-8 glass p-4 rounded-2xl shadow-2xl skew-x-12"
               >
                 <div className="flex items-center gap-3">
-                  <CursorClick className="w-6 h-6 text-primary" />
+                  <MousePointerClick className="w-6 h-6 text-primary" />
                   <div className="text-[10px] font-black uppercase text-white/60">One Click Savings</div>
                 </div>
               </motion.div>
