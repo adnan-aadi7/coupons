@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { useGetMeQuery, useLogoutMutation } from '@/redux/api/authApi';
 import { useRouter, usePathname } from 'next/navigation';
 import { useScanner } from '@/context/ScannerContext';
+import Logo from '../common/Logo';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,20 +42,12 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-xl shadow-slate-200/50' : 'bg-white'} py-4`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-xl shadow-slate-200/50' : 'bg-transparent'} py-4`}>
         <div className="max-w-[1280px] mx-auto px-8">
           <div className="flex items-center justify-between h-[60px]">
 
-            {/* Left: Logo - Mint Elite */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative w-10 h-10 bg-[#1A1C1C] rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110 overflow-hidden">
-                <Tag className="w-6 h-6 text-white rotate-[-15deg] z-10" />
-                <div className="absolute bottom-2 left-2 w-3 h-3 bg-[#FF9800] rounded-full border-2 border-[#1A1C1C]" />
-              </div>
-              <span className="font-['Manrope'] font-black text-[30px] text-[#1A1C1C] tracking-[-1px] leading-none">
-                Mint <span className="text-[#1A1C1C] border-b-4 border-[#FF9800] pb-1">Elite</span>
-              </span>
-            </Link>
+            {/* Left: Logo - Coupons Mart */}
+            <Logo />
 
             {/* Middle: Desktop Nav Links */}
             <div className="hidden lg:flex items-center gap-8">
@@ -99,7 +92,7 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <div className="hidden sm:flex items-center gap-4">
-                    <Link href="/login">
+                    <Link href="/auth/login">
                       <button className="px-4 py-2 text-[18px] font-semibold tracking-[0.7px] text-[#475569] hover:text-[#EA580C] transition-colors font-['Manrope'] leading-[17px]">
                         Sign In
                       </button>
@@ -158,7 +151,7 @@ export default function Navbar() {
                 ))}
               </div>
               <div className="flex flex-col gap-4 pt-4">
-                <Link href="/login" className="w-full" onClick={() => setMobileOpen(false)}>
+                <Link href="/auth/login" className="w-full" onClick={() => setMobileOpen(false)}>
                   <button className="w-full py-5 rounded-3xl bg-slate-100 hover:bg-slate-200 font-bold uppercase tracking-widest text-sm text-slate-900 transition-colors font-['Manrope']">Sign In</button>
                 </Link>
                 <button

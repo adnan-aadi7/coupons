@@ -23,7 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`h-full antialiased scroll-smooth ${inter.variable} ${outfit.variable}`}>
-      <body className="font-sans min-h-full flex flex-col bg-background text-foreground selection:bg-primary/20">
+      <body className="font-sans min-h-full flex flex-col bg-white text-foreground selection:bg-primary/20 relative">
+        {/* Global Background Gradients (Blobs) */}
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-[#FF9800]/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[10%] left-[-10%] w-[50%] h-[50%] bg-[#F65300]/5 blur-[150px] rounded-full" />
+          <div className="absolute top-[30%] left-[20%] w-[30%] h-[30%] bg-[#FFB74D]/10 blur-[100px] rounded-full" />
+        </div>
+
         <StoreProvider>
           <ScannerProvider>
             {/* <StickyBanner /> */}

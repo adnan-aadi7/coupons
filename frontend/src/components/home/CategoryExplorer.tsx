@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 export default function CategoryExplorer() {
   return (
-    <section className="bg-white">
+    <section className="">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
 
         {/* Header */}

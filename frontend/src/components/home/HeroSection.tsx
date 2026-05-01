@@ -46,7 +46,7 @@ export default function HeroSection({ onOpenScanner }: HeroSectionProps) {
   }, []);
 
   return (
-    <section className="relative bg-[#F9F9F9] mt-20 lg:mt-21 overflow-hidden flex items-center min-h-[500px] font-['Manrope'] ">
+    <section className="relative bg-transparent mt-20 lg:mt-21 overflow-hidden flex items-center min-h-[500px] font-['Manrope'] ">
       <div className="max-w-[1280px] w-full mx-auto px-8 relative flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8 py-12 lg:py-0">
 
         {/* Left Side: Typography & Search */}

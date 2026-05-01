@@ -45,7 +45,7 @@ export default function BrandGrid() {
           {/* View All Link instead of arrows */}
           <div className="flex sm:flex-none justify-center sm:justify-end w-full sm:w-auto">
             <Link
-              href="/categories"
+              href="/stores"
               className="group flex items-center justify-between sm:justify-start gap-4 font-['Manrope'] font-bold text-[#1A1C1C] text-[14px] hover:text-[#FF9800] transition-colors w-full sm:w-auto p-4 sm:p-0 rounded-2xl bg-white sm:bg-transparent border border-slate-100 sm:border-transparent shadow-sm sm:shadow-none"
             >
               <span>View All Stores</span>
