@@ -43,21 +43,20 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       const width = container?.clientWidth || 480;
       const height = container?.clientHeight || 270;
 
-      // Optimized qrbox for 1D barcodes (wide and short)
+
+
+      // Adaptive qrbox for 1D barcodes (wide and short, scales on mobile)
       const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
-        const minEdgePercentage = 0.7; // 70%
-        const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
-        const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
-        return {
-          width: viewfinderWidth * 0.8,
-          height: 150
-        };
+        const isMobile = viewfinderWidth < 600;
+        const width = isMobile ? viewfinderWidth * 0.9 : viewfinderWidth * 0.8;
+        const height = isMobile ? 120 : 150; // Slightly shorter on mobile
+        return { width, height };
       };
 
       await html5Qrcode.start(
         { facingMode: "environment" },
         {
-          fps: 30, // Faster scan rate
+          fps: 30,
           qrbox: qrboxFunction,
           aspectRatio: width / height,
           disableFlip: true,
@@ -117,18 +116,18 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-4 font-['Manrope']"
+      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-0 sm:p-4 font-['Manrope']"
     >
-      <div className="relative w-full max-w-lg bg-white rounded-[32px] overflow-hidden shadow-2xl">
+      <div className="relative w-full h-full sm:h-auto sm:max-w-lg bg-white sm:rounded-[32px] overflow-hidden shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div>
-            <h2 className="text-[22px] font-black text-[#1A1C1C]">Scanner</h2>
-            <p className="text-slate-500 text-[13px]">Scan or enter barcode manually</p>
+            <h2 className="text-[20px] sm:text-[22px] font-black text-[#1A1C1C]">Scanner</h2>
+            <p className="text-slate-500 text-[12px] sm:text-[13px]">Scan or enter barcode manually</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors"
+            className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
