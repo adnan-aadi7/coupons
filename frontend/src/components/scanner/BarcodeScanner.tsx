@@ -29,6 +29,7 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
     let html5Qrcode: any = null;
 
     try {
+      await new Promise(resolve => setTimeout(resolve, 300));
       // Permission check
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       stream.getTracks().forEach(track => track.stop());
@@ -61,15 +62,17 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       await html5Qrcode.start(
         { 
           facingMode: "environment",
-          // Request high resolution for better 1D barcode reading
-          width: { min: 640, ideal: 1280, max: 1920 },
-          height: { min: 480, ideal: 720, max: 1080 }
         },
         {
           fps: 30,
           qrbox: qrboxFunction,
           aspectRatio: width / height,
           disableFlip: true,
+          videoConstraints: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: "environment"
+          },
           formatsToSupport: [
             Html5QrcodeSupportedFormats.QR_CODE,
             Html5QrcodeSupportedFormats.EAN_13,
@@ -93,13 +96,12 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
         (decodedText: string) => {
           // Success Feedback
           if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-            navigator.vibrate([100, 50, 100]); // Distinct double pulse
+            navigator.vibrate([100, 50, 100]); 
           }
           
           setLoading(true);
           isRunningRef.current = false;
           
-          // Brief success delay for visual feedback
           setTimeout(() => {
             html5Qrcode?.stop().then(() => {
               onScanSuccess(decodedText);
