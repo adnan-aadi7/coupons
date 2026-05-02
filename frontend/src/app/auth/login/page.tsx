@@ -34,7 +34,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
 
   return (
-    <div className="min-h-screen bg-white flex overflow-hidden mt-10">
+    <div className=" bg-white flex overflow-hidden mt-10 relative z-10">
 
       {/* Left Side: Login Form */}
       <div className="w-full lg:w-[55%] flex flex-col justify-center px-12 md:px-24 lg:px-32 py-20 relative">
@@ -136,8 +136,8 @@ export default function LoginPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="space-y-12 flex flex-col items-center"
         >
-          {/* Main Logo for Brand Panel */}
-          <Logo iconOnly className="scale-[2.5] mb-16" />
+          {/* Main Logo for Brand Panel
+          <Logo iconOnly className="scale-[2.5] mb-16" /> */}
 
           <div className="space-y-6">
             <h2 className="text-[56px] font-semibold leading-tight">Join the Hunt</h2>

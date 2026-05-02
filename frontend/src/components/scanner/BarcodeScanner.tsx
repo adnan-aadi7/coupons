@@ -34,14 +34,16 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       stream.getTracks().forEach(track => track.stop());
 
       const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+      const isMobile = window.innerWidth < 640;
+      const regionId = isMobile ? "barcode-video-region-mobile" : "barcode-video-region-desktop";
       
-      const videoRegion = document.getElementById("barcode-video-region");
+      const videoRegion = document.getElementById(regionId);
       if (!videoRegion) throw new Error("Scanner region not found");
 
       // Clear any existing elements to prevent double camera view
       videoRegion.innerHTML = "";
 
-      html5Qrcode = new Html5Qrcode("barcode-video-region");
+      html5Qrcode = new Html5Qrcode(regionId);
       scannerRef.current = html5Qrcode;
 
       const container = containerRef.current;
@@ -64,6 +66,7 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
           aspectRatio: width / height,
           disableFlip: true,
           formatsToSupport: [
+            Html5QrcodeSupportedFormats.QR_CODE,
             Html5QrcodeSupportedFormats.EAN_13,
             Html5QrcodeSupportedFormats.EAN_8,
             Html5QrcodeSupportedFormats.UPC_A,
@@ -71,13 +74,23 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
             Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
             Html5QrcodeSupportedFormats.CODE_128,
             Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.ITF
+            Html5QrcodeSupportedFormats.CODE_93,
+            Html5QrcodeSupportedFormats.ITF,
+            Html5QrcodeSupportedFormats.DATA_MATRIX,
+            Html5QrcodeSupportedFormats.AZTEC,
+            Html5QrcodeSupportedFormats.PDF_417,
+            Html5QrcodeSupportedFormats.CODABAR
           ],
           experimentalFeatures: {
             useBarCodeDetectorIfSupported: true,
           },
         },
         (decodedText: string) => {
+          // Haptic Feedback (Vibration)
+          if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+            navigator.vibrate(100);
+          }
+          
           setLoading(true);
           isRunningRef.current = false;
           html5Qrcode?.stop().then(() => {
@@ -125,13 +138,13 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-0 sm:p-4 font-['Manrope']"
+      className="fixed inset-0 z-[100] font-['Manrope']"
     >
-      {/* Hide default html5-qrcode UI elements and redundant video/canvas layers */}
+      {/* Global CSS Overrides */}
       <style jsx global>{`
-        #barcode-video-region img { display: none !important; }
-        #barcode-video-region canvas { display: none !important; }
-        #barcode-video-region video { 
+        #barcode-video-region-desktop img, #barcode-video-region-mobile img { display: none !important; }
+        #barcode-video-region-desktop canvas, #barcode-video-region-mobile canvas { display: none !important; }
+        #barcode-video-region-desktop video, #barcode-video-region-mobile video { 
           width: 100% !important; 
           height: 100% !important; 
           object-fit: cover !important;
@@ -141,121 +154,105 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
         #qr-shaded-region > div { display: none !important; }
       `}</style>
 
-      <div className="relative w-full h-full sm:h-auto sm:max-w-lg bg-white sm:rounded-[40px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] flex flex-col transition-all duration-500">
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white z-50">
-          <div>
-            <h2 className="text-[18px] sm:text-[22px] font-black text-[#1A1C1C] tracking-tight">Product Scanner</h2>
-            <p className="text-slate-400 text-[11px] sm:text-[12px] font-bold uppercase tracking-widest">Coupons Mart Official Lens</p>
+      {/* --- DESKTOP VIEW (sm+) --- */}
+      <div className="hidden sm:flex fixed inset-0 items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+        <div className="relative w-full max-w-lg bg-white rounded-[40px] overflow-hidden shadow-2xl flex flex-col">
+          {/* Desktop Header */}
+          <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+            <div>
+              <h2 className="text-[22px] font-black text-[#1A1C1C]">Product Scanner</h2>
+              <p className="text-slate-400 text-[12px] font-bold uppercase tracking-widest">Coupons Mart Official Lens</p>
+            </div>
+            <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-100 text-slate-400 rounded-full transition-all active:scale-90">
+              <X className="w-6 h-6" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-[#FF9800] rounded-full transition-all active:scale-90"
-          >
-            <X className="w-5 h-5" />
+
+          <div className="relative aspect-video bg-black overflow-hidden flex items-center justify-center">
+            {!manualMode && <div id="barcode-video-region-desktop" className="w-full h-full" />}
+            
+            {!manualMode && !loading && !starting && !error && (
+              <div className="absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center">
+                <div className="relative w-[80%] h-[140px] max-w-[350px]">
+                  <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-[#FF9800] rounded-tl-xl" />
+                  <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-[#FF9800] rounded-tr-xl" />
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[#FF9800] rounded-bl-xl" />
+                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[#FF9800] rounded-br-xl" />
+                  <motion.div animate={{ top: ['10%', '90%', '10%'] }} transition={{ duration: 2.5, repeat: Infinity }} className="absolute left-2 right-2 h-[2px] bg-[#FF9800] shadow-[0_0_15px_#FF9800]" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="p-8 bg-white">
+            {manualMode ? (
+              <div className="space-y-6">
+                <input autoFocus type="text" value={manualBarcode} onChange={(e) => setManualBarcode(e.target.value)} placeholder="Enter Barcode" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xl font-bold focus:outline-none focus:border-[#FF9800]" />
+                <div className="flex gap-4">
+                  <button onClick={() => setManualMode(false)} className="flex-1 py-4 font-bold text-slate-400">Back</button>
+                  <button onClick={handleManualSubmit} className="flex-[2] py-4 bg-[#1A1C1C] text-white rounded-2xl font-bold hover:bg-[#FF9800] transition-all">Search Product</button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setManualMode(true)} className="w-full py-5 bg-slate-50 text-slate-600 rounded-2xl font-black text-[14px] uppercase tracking-widest flex items-center justify-center gap-3 border border-slate-100">
+                <Keyboard className="w-5 h-5" /> Enter Manually
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* --- MOBILE VIEW (default) --- */}
+      <div className="sm:hidden fixed inset-0 flex flex-col bg-black overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-50 bg-gradient-to-b from-black/60 to-transparent">
+          <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
+             <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Scanner Lens 1.0</span>
+          </div>
+          <button onClick={onClose} className="w-12 h-12 bg-white/10 backdrop-blur-md text-white rounded-full flex items-center justify-center border border-white/10">
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex-1 relative flex flex-col min-h-0">
-          <AnimatePresence mode="wait">
-            {!manualMode ? (
-              <motion.div 
-                key="scanner" 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                exit={{ opacity: 0 }}
-                className="flex-1 flex flex-col min-h-0"
-              >
-                <div
-                  ref={containerRef}
-                  className="relative flex-1 bg-black overflow-hidden flex items-center justify-center"
-                >
-                  {/* Video Stream */}
-                  <div id="barcode-video-region" className="w-full h-full object-cover" />
-
-                  {/* Custom Scanning Overlay */}
-                  {!loading && !starting && !error && (
-                    <div className="absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center">
-                      {/* Scanning Box Area (Simulated QRBox size) */}
-                      <div className="relative w-[85%] h-[140px] max-w-[400px]">
-                        {/* Corner Markers */}
-                        <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-[#FF9800] rounded-tl-xl" />
-                        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-[#FF9800] rounded-tr-xl" />
-                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[#FF9800] rounded-bl-xl" />
-                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[#FF9800] rounded-br-xl" />
-
-                        {/* Animated Scanning Beam - Restricted to Box */}
-                        <motion.div
-                          animate={{ top: ['10%', '90%', '10%'] }}
-                          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                          className="absolute left-2 right-2 h-[3px] bg-[#FF9800] shadow-[0_0_20px_#FF9800] blur-[1px]"
-                        />
-                        
-                        <div className="absolute -top-10 left-0 right-0 text-center">
-                            <span className="text-[10px] font-black text-[#FF9800] uppercase tracking-[0.3em] bg-black/40 px-3 py-1 rounded-full backdrop-blur-md">Detecting Barcode...</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {(starting || loading) && !error && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-900/95 z-40">
-                      <Loader2 className="w-10 h-10 text-[#FF9800] animate-spin" />
-                      <p className="text-white text-[12px] font-black tracking-widest uppercase opacity-80">
-                        {loading ? 'Fetching Product Info...' : 'Initializing Lens...'}
-                      </p>
-                    </div>
-                  )}
-
-                  {error && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-900/95 p-6 text-center z-40">
-                      <AlertCircle className="w-12 h-12 text-red-500" />
-                      <p className="text-white text-[16px] font-bold">{error}</p>
-                    </div>
-                  )}
+        <div className="flex-1 relative flex items-center justify-center">
+            {!manualMode && <div id="barcode-video-region-mobile" className="w-full h-full" />}
+            
+            {!manualMode && !loading && !starting && !error && (
+              <div className="absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center">
+                <div className="relative w-[85%] h-[120px]">
+                  <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-[#FF9800] rounded-tl-2xl" />
+                  <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-[#FF9800] rounded-tr-2xl" />
+                  <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-[#FF9800] rounded-bl-2xl" />
+                  <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-[#FF9800] rounded-br-2xl" />
+                  <motion.div animate={{ top: ['10%', '90%', '10%'] }} transition={{ duration: 2, repeat: Infinity }} className="absolute left-4 right-4 h-[3px] bg-[#FF9800] shadow-[0_0_25px_#FF9800]" />
+                  <div className="absolute -top-12 left-0 right-0 text-center">
+                    <span className="text-[10px] font-black text-[#FF9800] uppercase tracking-[0.3em] animate-pulse">Detecting Barcode...</span>
+                  </div>
                 </div>
-
-                <div className="p-6 bg-white shrink-0">
-                  <button
-                    onClick={() => setManualMode(true)}
-                    className="w-full py-5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-2xl font-black text-[14px] uppercase tracking-widest flex items-center justify-center gap-3 transition-all border border-slate-100 active:scale-[0.98]"
-                  >
-                    <Keyboard className="w-5 h-5" />
-                    Enter Barcode Manually
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div key="manual" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="p-6 space-y-6 flex-1 bg-white">
-                <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
-                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Barcode Number</label>
-                  <input
-                    autoFocus
-                    type="text"
-                    value={manualBarcode}
-                    onChange={(e) => setManualBarcode(e.target.value)}
-                    placeholder="e.g. 716270001660"
-                    className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-5 text-[24px] font-black text-[#1A1C1C] focus:outline-none focus:border-[#FF9800] transition-all placeholder:text-slate-200"
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    onClick={() => setManualMode(false)}
-                    className="w-full sm:flex-1 py-5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[14px] uppercase tracking-widest active:scale-[0.98] transition-all"
-                  >
-                    Back to Lens
-                  </button>
-                  <button
-                    onClick={handleManualSubmit}
-                    disabled={!manualBarcode || loading}
-                    className="w-full sm:flex-[2] py-5 bg-[#1A1C1C] hover:bg-[#FF9800] text-white rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-black/10 active:scale-[0.98]"
-                  >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Search Product'}
-                  </button>
-                </div>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
+
+            {(starting || loading) && (
+              <div className="absolute inset-0 bg-black flex flex-col items-center justify-center gap-4 z-[60]">
+                <Loader2 className="w-12 h-12 text-[#FF9800] animate-spin" />
+                <p className="text-white text-[10px] font-black uppercase tracking-widest opacity-60">Initializing Lens</p>
+              </div>
+            )}
+        </div>
+
+        <div className="bg-black/90 backdrop-blur-xl p-8 pb-12 pt-6 border-t border-white/5 z-50">
+          {manualMode ? (
+            <motion.div initial={{ y: 20 }} animate={{ y: 0 }} className="space-y-6">
+                <input autoFocus type="text" value={manualBarcode} onChange={(e) => setManualBarcode(e.target.value)} placeholder="Type Barcode" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-2xl font-black text-white focus:outline-none focus:border-[#FF9800] transition-all" />
+                <div className="flex gap-4">
+                  <button onClick={() => setManualMode(false)} className="flex-1 py-5 text-white/40 font-black uppercase text-xs tracking-widest">Back</button>
+                  <button onClick={handleManualSubmit} className="flex-[2] py-5 bg-[#FF9800] text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl shadow-[#FF9800]/20">Search</button>
+                </div>
+            </motion.div>
+          ) : (
+            <button onClick={() => setManualMode(true)} className="w-full py-5 bg-white text-black rounded-2xl font-black text-[12px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 active:scale-95 transition-all">
+              <Keyboard className="w-5 h-5" /> Type Barcode
+            </button>
+          )}
         </div>
       </div>
     </motion.div>
