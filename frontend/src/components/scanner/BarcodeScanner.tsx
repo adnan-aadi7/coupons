@@ -102,11 +102,12 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
           setLoading(true);
           isRunningRef.current = false;
           
+          // Show "Searching" state for a moment to give user feedback
           setTimeout(() => {
             html5Qrcode?.stop().then(() => {
               onScanSuccess(decodedText);
             }).catch(() => onScanSuccess(decodedText));
-          }, 300);
+          }, 800); // Increased delay for better feedback
         },
         () => { }
       );
@@ -182,6 +183,15 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
           <div className="relative aspect-video bg-black overflow-hidden flex items-center justify-center">
             {!manualMode && <div id="barcode-video-region-desktop" className="w-full h-full" />}
             
+            {(starting || loading) && (
+              <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-4 z-40">
+                <Loader2 className="w-10 h-10 text-[#FF9800] animate-spin" />
+                <p className="text-white text-[12px] font-black uppercase tracking-widest opacity-80">
+                  {loading && !starting ? 'Searching Product...' : 'Initializing Lens...'}
+                </p>
+              </div>
+            )}
+
             {!manualMode && !loading && !starting && !error && (
               <div className="absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center">
                 <div className="relative w-[80%] h-[140px] max-w-[350px]">
@@ -251,7 +261,9 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
             {(starting || loading) && (
               <div className="absolute inset-0 bg-black flex flex-col items-center justify-center gap-4 z-[60]">
                 <Loader2 className="w-12 h-12 text-[#FF9800] animate-spin" />
-                <p className="text-white text-[10px] font-black uppercase tracking-widest opacity-60">Initializing Lens</p>
+                <p className="text-white text-[10px] font-black uppercase tracking-widest opacity-60">
+                  {loading && !starting ? 'Searching Product...' : 'Initializing Lens'}
+                </p>
               </div>
             )}
         </div>
