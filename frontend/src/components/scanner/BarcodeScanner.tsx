@@ -50,16 +50,21 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       const width = container?.clientWidth || 480;
       const height = container?.clientHeight || 270;
 
-      // Adaptive qrbox for 1D barcodes (wide and short, scales on mobile)
+      // Adaptive qrbox for 1D barcodes (wider and taller for better capture)
       const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
         const isMobile = viewfinderWidth < 600;
         const width = isMobile ? viewfinderWidth * 0.9 : viewfinderWidth * 0.8;
-        const height = isMobile ? 120 : 150; 
+        const height = isMobile ? 200 : 250; // Increased height for easier alignment
         return { width, height };
       };
 
       await html5Qrcode.start(
-        { facingMode: "environment" },
+        { 
+          facingMode: "environment",
+          // Request high resolution for better 1D barcode reading
+          width: { min: 640, ideal: 1280, max: 1920 },
+          height: { min: 480, ideal: 720, max: 1080 }
+        },
         {
           fps: 30,
           qrbox: qrboxFunction,
@@ -86,16 +91,20 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
           },
         },
         (decodedText: string) => {
-          // Haptic Feedback (Vibration)
+          // Success Feedback
           if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-            navigator.vibrate(100);
+            navigator.vibrate([100, 50, 100]); // Distinct double pulse
           }
           
           setLoading(true);
           isRunningRef.current = false;
-          html5Qrcode?.stop().then(() => {
-            onScanSuccess(decodedText);
-          }).catch(() => onScanSuccess(decodedText));
+          
+          // Brief success delay for visual feedback
+          setTimeout(() => {
+            html5Qrcode?.stop().then(() => {
+              onScanSuccess(decodedText);
+            }).catch(() => onScanSuccess(decodedText));
+          }, 300);
         },
         () => { }
       );
@@ -218,14 +227,20 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
             
             {!manualMode && !loading && !starting && !error && (
               <div className="absolute inset-0 pointer-events-none z-30 flex flex-col items-center justify-center">
-                <div className="relative w-[85%] h-[120px]">
-                  <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-[#FF9800] rounded-tl-2xl" />
-                  <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-[#FF9800] rounded-tr-2xl" />
-                  <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-[#FF9800] rounded-bl-2xl" />
-                  <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-[#FF9800] rounded-br-2xl" />
-                  <motion.div animate={{ top: ['10%', '90%', '10%'] }} transition={{ duration: 2, repeat: Infinity }} className="absolute left-4 right-4 h-[3px] bg-[#FF9800] shadow-[0_0_25px_#FF9800]" />
+                <div className="relative w-[85%] h-[200px]">
+                  <div className={`absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 rounded-tl-2xl transition-colors duration-300 ${loading ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'border-[#FF9800]'}`} />
+                  <div className={`absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 rounded-tr-2xl transition-colors duration-300 ${loading ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'border-[#FF9800]'}`} />
+                  <div className={`absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 rounded-bl-2xl transition-colors duration-300 ${loading ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'border-[#FF9800]'}`} />
+                  <div className={`absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 rounded-br-2xl transition-colors duration-300 ${loading ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'border-[#FF9800]'}`} />
+                  
+                  {!loading && (
+                    <motion.div animate={{ top: ['10%', '90%', '10%'] }} transition={{ duration: 2, repeat: Infinity }} className="absolute left-4 right-4 h-[3px] bg-[#FF9800] shadow-[0_0_25px_#FF9800]" />
+                  )}
+
                   <div className="absolute -top-12 left-0 right-0 text-center">
-                    <span className="text-[10px] font-black text-[#FF9800] uppercase tracking-[0.3em] animate-pulse">Detecting Barcode...</span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.3em] transition-colors duration-300 ${loading ? 'text-green-500' : 'text-[#FF9800] animate-pulse'}`}>
+                      {loading ? 'Code Captured!' : 'Detecting Barcode...'}
+                    </span>
                   </div>
                 </div>
               </div>
