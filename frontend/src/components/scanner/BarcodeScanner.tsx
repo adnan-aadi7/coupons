@@ -31,8 +31,8 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
 
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      const { Html5Qrcode } = await import('html5-qrcode');
-
+      const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+      
       const videoRegion = document.getElementById("barcode-video-region");
       if (!videoRegion) throw new Error("Scanner region not found");
 
@@ -40,14 +40,37 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       scannerRef.current = html5Qrcode;
 
       const container = containerRef.current;
-      const w = container?.clientWidth || 480;
-      const h = container?.clientHeight || 270;
+      const width = container?.clientWidth || 480;
+      const height = container?.clientHeight || 270;
+
+      // Optimized qrbox for 1D barcodes (wide and short)
+      const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+        const minEdgePercentage = 0.7; // 70%
+        const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+        return {
+          width: viewfinderWidth * 0.8,
+          height: 150
+        };
+      };
 
       await html5Qrcode.start(
         { facingMode: "environment" },
         {
-          fps: 20,
-          aspectRatio: w / h,
+          fps: 30, // Faster scan rate
+          qrbox: qrboxFunction,
+          aspectRatio: width / height,
+          disableFlip: true,
+          formatsToSupport: [
+            Html5QrcodeSupportedFormats.EAN_13,
+            Html5QrcodeSupportedFormats.EAN_8,
+            Html5QrcodeSupportedFormats.UPC_A,
+            Html5QrcodeSupportedFormats.UPC_E,
+            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+            Html5QrcodeSupportedFormats.CODE_128,
+            Html5QrcodeSupportedFormats.CODE_39,
+            Html5QrcodeSupportedFormats.ITF
+          ],
           experimentalFeatures: {
             useBarCodeDetectorIfSupported: true,
           },
