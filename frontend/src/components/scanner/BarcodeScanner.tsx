@@ -259,11 +259,14 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
             )}
 
             {(starting || loading) && (
-              <div className="absolute inset-0 bg-black flex flex-col items-center justify-center gap-4 z-[60]">
+              <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-[60]">
                 <Loader2 className="w-12 h-12 text-[#FF9800] animate-spin" />
-                <p className="text-white text-[10px] font-black uppercase tracking-widest opacity-60">
-                  {loading && !starting ? 'Searching Product...' : 'Initializing Lens'}
-                </p>
+                <div className="text-center">
+                  <p className="text-white text-[14px] font-black uppercase tracking-[0.2em]">
+                    {loading && !starting ? 'Searching Product...' : 'Initializing Lens'}
+                  </p>
+                  <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">Please hold steady</p>
+                </div>
               </div>
             )}
         </div>

@@ -8,6 +8,11 @@ import { useParams, useRouter } from 'next/navigation';
 interface Retailer {
   name: string;
   price: number;
+  originalPrice?: number;
+  discount?: string;
+  couponCode?: string;
+  cashback?: string;
+  lastUpdated?: string;
   status: string;
   url: string;
 }
@@ -220,6 +225,15 @@ export default function ScanResultDisplay() {
               )}
             </div>
 
+            {/* Price Disclaimer */}
+            <div className="bg-slate-50 rounded-2xl p-4 flex items-start gap-3 border border-slate-100 mb-4">
+              <AlertCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-slate-500 leading-snug">
+                <span className="font-black text-slate-700 uppercase tracking-widest mr-1">Note:</span> 
+                Prices fluctuate based on retailer updates and region. Please confirm the final total on the merchant&apos;s checkout page.
+              </p>
+            </div>
+
             {/* Category */}
             <div className="bg-white rounded-[20px] p-5 shadow-sm border border-slate-100">
               <div className="flex items-center gap-2 text-slate-400 text-[12px] font-bold uppercase tracking-widest mb-1">
@@ -253,34 +267,73 @@ export default function ScanResultDisplay() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: (index % 6) * 0.05 }}
-                      className={`bg-white rounded-[24px] p-6 border transition-all ${isCheapest ? 'border-[#FF9800] shadow-[0_12px_30px_rgba(255,152,0,0.15)]' : 'border-slate-100 hover:border-slate-200 shadow-sm'}`}
+                      className={`bg-white rounded-[24px] p-6 border transition-all relative overflow-hidden group ${isCheapest ? 'border-[#FF9800] shadow-[0_20px_40px_rgba(255,152,0,0.15)] scale-[1.02] z-10' : 'border-slate-100 hover:border-slate-200 shadow-sm'}`}
                     >
-                      {isCheapest && (
-                        <div className="inline-flex items-center gap-1 bg-orange-50 text-[#FF9800] text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-orange-100 mb-4">
-                          ⭐ Best Deal
+                      {/* Deal Badge */}
+                      {(isCheapest || retailer.discount) && (
+                        <div className="absolute top-0 right-0">
+                          <div className={`px-4 py-1.5 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest ${isCheapest ? 'bg-[#FF9800] text-white' : 'bg-green-500 text-white'}`}>
+                            {isCheapest ? '⭐ Best Price' : retailer.discount}
+                          </div>
                         </div>
                       )}
-                      <div className="flex items-center justify-between mb-4">
+
+                      <div className="flex items-center justify-between mb-4 mt-2">
                         <span className="font-black text-[18px] text-[#1A1C1C]">{retailer.name}</span>
                         {retailer.status && (
-                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${getStatusColor(retailer.status)}`}>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getStatusColor(retailer.status)}`}>
                             {retailer.status}
                           </span>
                         )}
                       </div>
-                      <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mb-1">Retailer Price</p>
-                      <p className="text-[30px] font-black text-[#1A1C1C] mb-6">${retailer.price.toFixed(2)}</p>
+
+                      <div className="space-y-4 mb-6">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[32px] font-black text-[#1A1C1C] tracking-tighter">${retailer.price.toFixed(2)}</span>
+                          {retailer.originalPrice && (
+                            <span className="text-slate-300 text-[16px] line-through">${retailer.originalPrice.toFixed(2)}</span>
+                          )}
+                        </div>
+
+                        {/* Cashback Info */}
+                        {retailer.cashback && (
+                          <div className="flex items-center gap-2 text-green-600 font-bold text-[12px] bg-green-50 px-3 py-1.5 rounded-xl border border-green-100/50">
+                            <Shield className="w-3.5 h-3.5" />
+                            +{retailer.cashback} Cashback
+                          </div>
+                        )}
+
+                        {/* Coupon Code */}
+                        {retailer.couponCode && (
+                          <div className="flex items-center justify-between gap-2 bg-slate-50 border border-dashed border-slate-200 px-4 py-2.5 rounded-xl group/coupon cursor-pointer hover:border-[#FF9800] transition-colors">
+                            <div className="flex items-center gap-2">
+                              <Tag className="w-3.5 h-3.5 text-slate-400" />
+                              <span className="text-[12px] font-black text-[#1A1C1C] uppercase tracking-wider">{retailer.couponCode}</span>
+                            </div>
+                            <span className="text-[10px] font-bold text-[#FF9800] uppercase tracking-widest opacity-0 group-hover/coupon:opacity-100 transition-opacity">Copy</span>
+                          </div>
+                        )}
+                        
+                        {/* Verification Status */}
+                        <div className="flex items-center gap-1.5 opacity-60">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            Verified {retailer.lastUpdated || 'just now'}
+                          </span>
+                        </div>
+                      </div>
+
                       <a
                         href={retailer.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`w-full flex items-center justify-center gap-2 font-bold text-[14px] py-4 rounded-xl transition-colors ${
+                        className={`w-full flex items-center justify-center gap-2 font-black text-[13px] uppercase tracking-widest py-4 rounded-xl transition-all shadow-lg ${
                           isSoldOut || retailer.url === '#'
-                            ? 'bg-slate-100 text-slate-400 pointer-events-none cursor-not-allowed'
-                            : 'bg-[#1A1C1C] text-white hover:bg-[#FF9800]'
+                            ? 'bg-slate-100 text-slate-400 pointer-events-none'
+                            : 'bg-[#1A1C1C] text-white hover:bg-[#FF9800] shadow-black/10 hover:shadow-[#FF9800]/20 active:scale-[0.98]'
                         }`}
                       >
-                        {isSoldOut ? 'Out of Stock' : <> Buy Now <ExternalLink className="w-4 h-4" /></>}
+                        {isSoldOut ? 'Out of Stock' : <> Claim Deal <ExternalLink className="w-4 h-4" /></>}
                       </a>
                     </motion.div>
                   );
