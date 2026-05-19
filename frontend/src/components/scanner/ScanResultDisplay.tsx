@@ -116,9 +116,9 @@ export default function ScanResultDisplay() {
     );
   }
 
-  const pricedRetailers = product.retailers.filter(r => r.price > 0);
+  const pricedRetailers = product.retailers.filter((r: any) => r.price > 0);
   const cheapestRetailer = pricedRetailers.length > 0
-    ? pricedRetailers.reduce((min, r) => r.price < min.price ? r : min, pricedRetailers[0])
+    ? pricedRetailers.reduce((min: any, r: any) => r.price < min.price ? r : min, pricedRetailers[0])
     : (product.retailers.length > 0 ? product.retailers[0] : null);
 
   const bestPrice = (cheapestRetailer && cheapestRetailer.price > 0) ? cheapestRetailer.price : null;
