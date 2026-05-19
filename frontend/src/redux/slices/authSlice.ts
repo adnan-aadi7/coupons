@@ -15,6 +15,8 @@ interface User {
   };
   savedCoupons?: any[];
   favoriteStores?: any[];
+  contactPreferences?: any;
+  paymentMethods?: any[];
 }
 
 interface AuthState {
