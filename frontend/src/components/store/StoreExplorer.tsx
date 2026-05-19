@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchStores } from '@/redux/slices/storeSlice';
-
+import { Search, ChevronDown } from 'lucide-react';
+import StoreExplorerSidebar from './StoreExplorerSidebar';
+import StoreCard from './StoreCard';
 export default function StoreExplorer() {
   const [activeCategory, setActiveCategory] = useState('All Stores');
   const [searchQuery, setSearchQuery] = useState('');
