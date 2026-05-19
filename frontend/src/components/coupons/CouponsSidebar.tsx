@@ -25,7 +25,7 @@ export default function CouponsSidebar({
   onVerifiedToggle 
 }: CouponsSidebarProps) {
   return (
-    <aside className="lg:col-span-3 space-y-8 sticky top-32">
+    <aside className="hidden lg:block lg:col-span-3 space-y-8 sticky top-32 self-start">
       
       {/* Search Filter Header */}
       <div className="flex items-center gap-3 px-2">

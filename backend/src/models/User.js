@@ -39,6 +39,12 @@ const UserSchema = new mongoose.Schema({
       ref: 'Coupon',
     },
   ],
+  favoriteStores: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Store',
+    },
+  ],
   wallet: {
     pendingCashback: {
       type: Number,
@@ -53,6 +59,27 @@ const UserSchema = new mongoose.Schema({
       default: 0,
     },
   },
+  payoutMethods: [
+    {
+      provider: { type: String, enum: ['paypal'], default: 'paypal' },
+      email: { type: String, required: true },
+      isPrimary: { type: Boolean, default: true }
+    }
+  ],
+  country: {
+    type: String,
+    default: 'United States',
+  },
+  contactPreferences: {
+    deals: { type: Boolean, default: true },
+    cashback: { type: Boolean, default: true },
+    newsletter: { type: Boolean, default: false },
+    sms: { type: Boolean, default: false },
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+  resetPasswordOTP: String,
+  resetPasswordOTPExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -60,9 +87,9 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Encrypt password using bcrypt
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

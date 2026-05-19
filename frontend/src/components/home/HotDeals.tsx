@@ -1,149 +1,176 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Focus, ArrowRight } from 'lucide-react';
+import { Focus, ArrowRight, Zap, Flame, Ticket, Clock, Users } from 'lucide-react';
+import Link from 'next/link';
 
-const HOT_DEALS = [
-  {
-    id: 'nike',
-    title: 'Nike Elite Pro Collection',
-    desc: 'Unleash your potential with our exclusive member-only releases. Premium performance gear designed for the modern athlete.',
-    reward: '15% Cashback',
-    extra: 'Top Rated Deal',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80',
-    bgColor: 'bg-[#121A26]',
-  },
-  {
-    id: 'nordic',
-    title: 'Nordic Chrono',
-    desc: 'Timeless elegance meets modern savings.',
-    reward: '10% Cashback',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80',
-    bgColor: 'bg-[#156B8A]',
-  },
-  {
-    id: 'macbook',
-    title: 'MacBook Air M3',
-    desc: 'Empower your workflow today.',
-    reward: '$200 Reward',
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
-    bgColor: 'bg-[#111B28]',
+interface HotDealsProps {
+  deals: any[];
+  isLoading: boolean;
+  onOpenDeal?: (deal: any) => void;
+}
+
+export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps) {
+  // If no deals have resolved yet
+  if (isLoading && deals.length === 0) {
+    return (
+      <section className="py-20 bg-white relative overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[400px] bg-slate-50 animate-pulse rounded-[32px]" />
+      </section>
+    );
   }
-];
 
-export default function HotDeals() {
-  const featuredDeal = HOT_DEALS[0];
-  const secondaryDeals = HOT_DEALS.slice(1);
+  // Filter for hot deals/exclusive clearance deals
+  const hotDeals = deals.filter(d => d.exclusive || d.promoCode === 'NOT REQUIRED').slice(0, 3);
+
+  // If no custom flagged exclusive deals, fall back to trending database coupons
+  const displayedDeals = hotDeals.length > 0 ? hotDeals : deals.slice(0, 3);
+
+  if (displayedDeals.length === 0) return null;
 
   return (
-    <section className="py-16 lg:py-24 bg-white">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+    <section className="relative py-20 lg:py-28 bg-white overflow-hidden font-['Manrope'] border-t border-slate-100">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 relative z-10">
 
         {/* Header */}
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
           <div>
-            <h2 className="text-[32px] md:text-[40px] font-['Manrope'] font-semibold text-[#1A1C1C] leading-[1.1] tracking-[-0.8px] mb-2 flex items-center gap-3">
-              <Focus className="w-8 h-8 text-[#FF9800]" />
-              Hot Deals Spotlight
+            <h2 className="text-[32px] md:text-[40px] font-['Manrope'] font-semibold text-[#1A1C1C] leading-[1.1] tracking-[-0.8px] mb-2 text-center sm:text-left">
+              Hot Deals <span className="text-[#FF9800]">Spotlight</span>
             </h2>
-            <p className="text-[16px] font-['Manrope'] text-[#554434]">
-              Limited time offers hand-picked from elite brands.
+            <p className="text-[16px] font-['Manrope'] text-[#554434] leading-[24px] text-center sm:text-left">
+              Limited time exclusive promo codes hand-picked from top retailers.
             </p>
           </div>
-          <button className="text-[#8B5000] font-['Manrope'] font-bold text-[14px] hover:text-[#FF9800] transition-colors flex items-center gap-2">
-            View All Hot Deals <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="flex justify-center sm:justify-end">
+            <Link
+              href="/deals"
+              className="group flex items-center justify-center sm:justify-start gap-2 font-['Manrope'] font-bold text-[#8B5000] text-[15px] hover:text-[#FF9800] transition-colors"
+            >
+              <span>View All Hot Deals</span>
+              <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
 
-        {/* Asymmetrical Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-auto lg:h-[600px]">
+        {/* Symmetrical Horizontal Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-12">
+          {displayedDeals.map((deal, i) => {
+            const storeName = deal.store || deal.storeName || 'Brand Offer';
 
-          {/* Main Dominant Deal (Left) */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-            className={`lg:col-span-2 relative rounded-[32px] overflow-hidden group cursor-pointer h-[500px] lg:h-full flex flex-col justify-end p-8 sm:p-12 ${featuredDeal.bgColor}`}
-          >
-            {/* Background Image Setup */}
-            <div className="absolute inset-0 z-0">
-              <img
-                src={featuredDeal.image}
-                alt={featuredDeal.title}
-                className="w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-80 transition-all duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-transparent" />
-            </div>
+            // Smart discount parser to produce gorgeous, huge dynamic typography
+            let discountText = 'HOT DEAL';
+            if (deal.discountValue) {
+              const symbol = deal.discountType === 'percentage' ? '%' : (deal.currency || '$');
+              if (deal.discountType === 'percentage') {
+                discountText = `${deal.discountValue}% OFF`;
+              } else {
+                discountText = `${symbol}${deal.discountValue} OFF`;
+              }
+            } else {
+              // Try to extract dynamic discount values directly from the title using smart regex!
+              const title = deal.title || '';
+              const percentMatch = title.match(/(\d+)\s*%/);
+              const eurMatch = title.match(/(€\s*\d+|\d+\s*€)/);
+              const usdMatch = title.match(/(\d+)\s*USD/i);
+              const dollarMatch = title.match(/(\$\s*\d+|\d+\s*\$)/);
 
-            {/* Badge */}
-            <div className="absolute top-6 left-6 sm:top-8 sm:left-8 bg-[#FF9800] text-black text-[13px] font-black px-4 py-2 rounded-full flex items-center gap-2 z-20 shadow-[0_0_20px_rgba(255,152,0,0.4)]">
-              <span className="w-4 h-4 rounded-full border-[2px] border-black flex items-center justify-center text-[10px]">$</span>
-              {featuredDeal.reward}
-            </div>
+              if (usdMatch) {
+                discountText = `$${usdMatch[1]} OFF`;
+              } else if (eurMatch) {
+                const cleaned = eurMatch[0].replace(/\s+/g, '').toUpperCase();
+                discountText = cleaned.includes('€') ? `${cleaned} OFF` : `€${cleaned} OFF`;
+              } else if (dollarMatch) {
+                const cleaned = dollarMatch[0].replace(/\s+/g, '').toUpperCase();
+                discountText = cleaned.includes('$') ? `${cleaned} OFF` : `$${cleaned} OFF`;
+              } else if (percentMatch) {
+                discountText = `${percentMatch[1]}% OFF`;
+              } else if (deal.discount) {
+                discountText = deal.discount.toUpperCase().replace('DISCOUNT', 'OFF').replace('USD', '$');
+              } else {
+                discountText = 'HOT DEAL';
+              }
+            }
 
-            {/* Content Overlay */}
-            <div className="relative z-10 max-w-[500px]">
-              <span className="text-yellow-400 font-bold text-[11px] tracking-[2px] uppercase mb-3 block">
-                {featuredDeal.extra}
-              </span>
-              <h3 className="font-['Manrope'] text-[36px] sm:text-[48px] font-bold leading-[1.1] tracking-[-1px] mb-4 text-white">
-                {featuredDeal.title}
-              </h3>
-              <p className="font-['Manrope'] text-[16px] leading-[24px] text-slate-300 mb-8">
-                {featuredDeal.desc}
-              </p>
-              <button className="bg-white text-black px-8 py-4 rounded-full font-bold text-[15px] hover:bg-[#FF9800] hover:text-white transition-colors">
-                Claim Offer Now
-              </button>
-            </div>
-          </motion.div>
+            const cleanStoreName = storeName.toLowerCase().replace(/\s+/g, '');
+            const logoUrl = `https://logo.clearbit.com/${cleanStoreName}.com`;
 
-          {/* Secondary Stacked Deals (Right) */}
-          <div className="flex flex-col gap-6 h-full">
-            {secondaryDeals.map((deal, i) => (
+            return (
               <motion.div
-                key={deal.id}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={deal._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: 0.2 + (i * 0.1), duration: 0.6 }}
-                className={`relative rounded-[32px] overflow-hidden group cursor-pointer flex-1 min-h-[250px] p-6 sm:p-8 flex flex-col justify-end ${deal.bgColor}`}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                onClick={() => onOpenDeal && onOpenDeal(deal)}
+                className="flex flex-row bg-white border border-slate-100 rounded-2xl sm:rounded-[32px] overflow-hidden group hover:shadow-xl hover:shadow-slate-100/50 transition-all duration-500 p-3 sm:p-0 gap-3 sm:gap-0 relative cursor-pointer"
               >
-                {/* Image Setup */}
-                <div className="absolute inset-0 z-0">
-                  <img
-                    src={deal.image}
-                    alt={deal.title}
-                    className="w-full h-full object-cover opacity-40 group-hover:scale-110 group-hover:opacity-60 transition-all duration-700 mix-blend-overlay"
+                {/* Left Image Area - Slightly Larger on Mobile */}
+                <div className="w-24 h-24 sm:w-[160px] sm:h-[130px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
+                  <img 
+                    src={deal.brandLogo || logoUrl} 
+                    alt={storeName} 
+                    className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
+                    onError={(e) => {
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(storeName)}&background=FF9800&color=fff&size=128&bold=true`;
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+                  <div className="absolute top-1 left-1 sm:top-2 sm:left-2 scale-75 sm:scale-100 origin-top-left">
+                    <span className="px-2 py-0.5 bg-[#FF9800] text-white text-[8px] font-black uppercase tracking-widest rounded-md shadow-md">
+                      Hot
+                    </span>
+                  </div>
                 </div>
 
-                {/* Badge */}
-                <div className="absolute top-6 left-6 backdrop-blur-md bg-white/10 border border-white/20 text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 z-20">
-                  <span className="text-[#FF9800]">$</span> {deal.reward}
-                </div>
+                {/* Content Area - Highly Compact on Mobile */}
+                <div className="flex-1 p-0 sm:p-5 flex flex-col justify-between relative min-w-0 pr-16 sm:pr-0">
+                  <div className="space-y-0.5 sm:space-y-2 pr-0 sm:pr-24">
+                    <div className="flex items-center gap-1 sm:gap-2 mb-0.5 sm:mb-1">
+                      <span className="text-[9px] sm:text-[11px] font-black text-[#FF9800] uppercase tracking-wider">{storeName}</span>
+                      <div className="flex items-center gap-0.5 bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded-full text-[7px] sm:text-[9px] font-black uppercase tracking-tight">
+                        <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" /> Verified
+                      </div>
+                    </div>
+                    <h3 className="text-xs sm:text-base font-black text-[#1A1C1C] leading-tight tracking-tight group-hover:text-[#FF9800] transition-colors uppercase line-clamp-1 sm:line-clamp-2">
+                      {deal.title}
+                    </h3>
+                  </div>
 
-                {/* Content Overlay */}
-                <div className="relative z-10 mt-auto">
-                  <h3 className="font-['Manrope'] text-[24px] font-bold leading-[1.2] mb-2 text-white">
-                    {deal.title}
-                  </h3>
-                  <p className="font-['Manrope'] text-[14px] text-slate-300 line-clamp-2 pr-12 transition-all">
-                    {deal.desc}
-                  </p>
+                  {/* Dynamic statistics row */}
+                  <div className="flex items-center gap-2 sm:gap-4 mt-1.5 sm:mt-3">
+                    <div className="flex items-center gap-0.5 sm:gap-1 text-slate-400 text-[8px] sm:text-[10px] font-black uppercase tracking-wider">
+                      <Clock className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /> Exp. Soon
+                    </div>
+                    <div className="flex items-center gap-0.5 sm:gap-1 text-slate-400 text-[8px] sm:text-[10px] font-black uppercase tracking-wider">
+                      <Users className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /> {Math.floor(Math.random() * 80) + 12} used
+                    </div>
+                  </div>
 
-                  {/* Arrow Action that slides in */}
-                  <div className="absolute right-0 bottom-0 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:-translate-y-2 transition-all duration-300">
-                    <ArrowRight className="w-5 h-5 text-white" />
+                  {/* Right Info Section - Dynamic positioning */}
+                  <div className="absolute top-3 right-3 sm:top-5 sm:right-5 text-right space-y-0 sm:space-y-0.5 pointer-events-none">
+                    <div className="text-sm sm:text-xl font-black text-[#FF9800] leading-none">
+                      {discountText}
+                    </div>
+                  </div>
+
+                  {/* Button - Compact positioning */}
+                  <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenDeal) onOpenDeal(deal);
+                      }}
+                      className="px-2.5 py-1.5 sm:px-5 sm:py-2.5 bg-[#FF9800] hover:bg-[#F57C00] text-white rounded-lg sm:rounded-xl font-black text-[9px] sm:text-[12px] transition-all shadow-md active:scale-95 flex items-center justify-center"
+                    >
+                      Get
+                    </button>
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </div>
-
+            );
+          })}
         </div>
+
       </div>
     </section>
   );

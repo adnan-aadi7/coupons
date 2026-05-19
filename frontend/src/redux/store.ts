@@ -1,16 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { couponApi } from './api/couponApi';
-import { authApi } from './api/authApi';
+import storesReducer from './slices/storeSlice';
+import authReducer from './slices/authSlice';
+import couponReducer from './slices/couponSlice';
 
 export const store = configureStore({
   reducer: {
-    [couponApi.reducerPath]: couponApi.reducer,
-    [authApi.reducerPath]: authApi.reducer,
+    auth: authReducer,
+    coupons: couponReducer,
+    stores: storesReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(couponApi.middleware, authApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false, // Useful for complex API objects if needed
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-

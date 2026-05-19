@@ -10,12 +10,13 @@ class CouponService {
    * @param {string} sort - popularity, newest, expiry
    * @param {number} limit - max results
    */
-  async getCoupons({ brand, category, store, sort, limit = 20 }) {
+  async getCoupons({ brand, category, store, sort, type, limit = 20 }) {
     let query = { isActive: true };
 
     if (brand) query.brand = new RegExp(brand, 'i');
     if (category) query.category = new RegExp(category, 'i');
     if (store) query.store = new RegExp(store, 'i');
+    if (type) query.type = type;
 
     let sortBy = { popularity: -1 };
     if (sort === 'newest') sortBy = { createdAt: -1 };

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const requestIp = require('request-ip');
 
 /**
- * @desc    Track click and redirect to affiliate link
+ * @desc    Track click and redirect to affiliate link with subid
  * @route   GET /api/track/:id
  */
 exports.trackClick = async (req, res) => {
@@ -16,10 +16,10 @@ exports.trackClick = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Coupon not found' });
     }
 
-    // 1. Detect User (Optional Auth)
+    // 1. Detect User
     let userId = null;
     let token = req.cookies.token;
-    
+
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
@@ -29,29 +29,71 @@ exports.trackClick = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
         userId = decoded.id;
       } catch (err) {
-        // Invalid token, continue as guest
+        // Continue as guest
       }
     }
 
     // 2. Capture Metadata
     const clientIp = requestIp.getClientIp(req);
-    
-    // 3. Log Click with Attribution
-    await Click.create({
+
+    // 3. Click Spam Protection (15 seconds Cooldown)
+    // Check if the same user (or guest IP) clicked this exact coupon within the last 15s
+    const cooldownPeriod = new Date(Date.now() - 5 * 1000);
+    const spamQuery = {
       dealId: couponId,
-      userId: userId,
-      ip: clientIp,
-      userAgent: req.headers['user-agent'],
-      status: 'pending',
-      estimatedCashback: (coupon.discountType === 'percentage' ? (coupon.discountValue / 20) : 0.5) // Hacky estimation for demo
-    });
+      createdAt: { $gte: cooldownPeriod }
+    };
 
-    // 4. Update popularity
-    coupon.popularity += 1;
-    await coupon.save();
+    if (userId) {
+      spamQuery.userId = userId;
+    } else {
+      spamQuery.ip = clientIp;
+    }
 
-    // 5. Redirect
-    res.redirect(coupon.link);
+    const existingClick = await Click.findOne(spamQuery);
+
+    if (!existingClick) {
+      // Log Click only if not a duplicate inside the cooldown window
+      await Click.create({
+        dealId: couponId,
+        userId: userId,
+        ip: clientIp,
+        userAgent: req.headers['user-agent'],
+        status: 'pending',
+        estimatedCashback: (coupon.discountType === 'percentage' ? (coupon.discountValue / 20) : 0.5)
+      });
+
+      // 4. Update popularity
+      coupon.popularity += 1;
+      await coupon.save();
+    } else {
+      console.log(`[Click Spam Blocked] Duplicate click suppressed for Coupon: ${couponId} (IP: ${clientIp})`);
+    }
+
+    // 5. Monetize & Append SubID (Strictly Admitad Integration)
+    let finalLink = coupon.link || '';
+
+    // Fallback: If coupon has no direct link, fetch the associated store's Admitad affiliate link
+    if (!finalLink) {
+      const Store = require('../models/Store');
+      const storeObj = await Store.findOne({ name: { $regex: new RegExp(`^${coupon.store}$`, 'i') } });
+      if (storeObj && storeObj.affiliateUrl) {
+        finalLink = storeObj.affiliateUrl;
+      } else if (storeObj && storeObj.baseUrl) {
+        finalLink = storeObj.baseUrl;
+      }
+    }
+
+    if (userId && finalLink) {
+      // Append SubID directly for Admitad tracking
+      const separator = finalLink.includes('?') ? '&' : '?';
+      if (!finalLink.includes('subid=')) {
+        finalLink += `${separator}subid=${userId}`;
+      }
+    }
+
+    // 6. Redirect
+    res.redirect(finalLink || 'https://google.com');
 
   } catch (error) {
     console.error('Tracking Error:', error.message);

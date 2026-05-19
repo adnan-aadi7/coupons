@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { StoreProvider } from "@/redux/StoreProvider";
 // import StickyBanner from "@/components/layout/StickyBanner";
@@ -12,6 +13,7 @@ const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ["latin"], variable: '--font-outfit' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: {
     default: "Coupons Mart | #1 Real-Time Barcode Scanner & Deal Finder",
     template: "%s | Coupons Mart"
@@ -68,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased scroll-smooth ${inter.variable} ${outfit.variable}`}>
+    <html lang="en" className={`h-full antialiased scroll-smooth ${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -95,6 +97,12 @@ export default function RootLayout({
           <div className="absolute bottom-[10%] left-[-10%] w-[50%] h-[50%] bg-[#F65300]/5 blur-[150px] rounded-full" />
           <div className="absolute top-[30%] left-[20%] w-[30%] h-[30%] bg-[#FFB74D]/10 blur-[100px] rounded-full" />
         </div>
+
+        {/* Skimlinks Automation Script */}
+        <Script 
+          src="https://s.skimresources.com/js/302474X1790474.skimlinks.js"
+          strategy="afterInteractive"
+        />
 
         <StoreProvider>
           <ScannerProvider>

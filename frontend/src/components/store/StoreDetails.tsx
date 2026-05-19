@@ -1,6 +1,8 @@
 "use client";
 
-import { useGetCouponsQuery } from '@/redux/api/couponApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { fetchCoupons } from '@/redux/slices/couponSlice';
 import { useParams } from 'next/navigation';
 import { SlidersHorizontal } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -12,18 +14,21 @@ import StoreDealCard from './StoreDealCard';
 export default function StoreDetails() {
   const { slug } = useParams();
   const storeName = typeof slug === 'string' ? slug.replace(/-/g, ' ') : '';
+  const dispatch = useDispatch<AppDispatch>();
+  const { coupons, loading: isLoading } = useSelector((state: RootState) => state.coupons);
+
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
   const [isCashbackActive, setIsCashbackActive] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeSort, setActiveSort] = useState('Recommended');
   const [logoError, setLogoError] = useState(false);
 
-  const { data: storeDeals, isLoading } = useGetCouponsQuery({
-    store: storeName,
-    sort: activeSort === 'Highest Discount' ? 'discount' : 'popularity'
-  });
-
-  const coupons = (storeDeals as any)?.data || [];
+  useEffect(() => {
+    dispatch(fetchCoupons({
+      store: storeName,
+      sort: activeSort === 'Highest Discount' ? 'discount' : 'popularity'
+    }));
+  }, [dispatch, storeName, activeSort]);
   
   const getBrandDomain = (name: string) => {
     const map: Record<string, string> = {

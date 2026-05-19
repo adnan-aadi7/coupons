@@ -1,11 +1,20 @@
 const express = require('express');
-const { simulateConversion } = require('../controllers/adminController');
+const { 
+  simulateConversion, 
+  syncAdmitad, 
+  getAdminClicks 
+} = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// protect + authorize('admin') would be real world, 
-// but for demo purposes, we'll just use protect so the user can test easily.
-router.post('/simulate-conversion/:clickId', protect, simulateConversion);
+// Get recent clicks (Admin Only)
+router.get('/clicks', protect, authorize('admin'), getAdminClicks);
+
+// Simulate affiliate conversion (Admin Only)
+router.post('/simulate-conversion/:clickId', protect, authorize('admin'), simulateConversion);
+
+// Manual sync from Admitad (Admin Only)
+router.post('/sync-admitad', protect, authorize('admin'), syncAdmitad);
 
 module.exports = router;

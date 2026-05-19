@@ -6,8 +6,8 @@ const couponService = require('../services/couponService');
  */
 exports.getCoupons = async (req, res) => {
   try {
-    const { brand, category, store, sort } = req.query;
-    const coupons = await couponService.getCoupons({ brand, category, store, sort });
+    const { brand, category, store, sort, type } = req.query;
+    const coupons = await couponService.getCoupons({ brand, category, store, sort, type });
     res.status(200).json({
       success: true,
       count: coupons.length,

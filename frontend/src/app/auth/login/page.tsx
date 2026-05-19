@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { X, Eye, EyeOff } from 'lucide-react';
@@ -28,13 +28,36 @@ const AppleLogo = () => (
   </svg>
 );
 
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { login, clearError } from '@/redux/slices/authSlice';
+import { useRouter } from 'next/navigation';
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+    return () => {
+      dispatch(clearError());
+    };
+  }, [isAuthenticated, router, dispatch]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
+
   return (
-    <div className=" bg-white flex overflow-hidden mt-10 relative z-10">
+    <div className="bg-white flex min-h-screen pt-[76px] overflow-hidden relative z-10">
 
       {/* Left Side: Login Form */}
       <div className="w-full lg:w-[55%] flex flex-col justify-center px-12 md:px-24 lg:px-32 py-20 relative">
@@ -45,7 +68,12 @@ export default function LoginPage() {
         >
           <h1 className="lg:text-[56px] text-[32px] font-semibold text-black mb-12">Welcome Back</h1>
 
-          <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-8" onSubmit={handleSubmit}>
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm font-bold">
+                {error}
+              </div>
+            )}
             <div className="space-y-3">
               <label className="text-[18px] font-medium text-black">Email</label>
               <input
@@ -82,13 +110,16 @@ export default function LoginPage() {
               <label htmlFor="remember" className="text-[14px] font-medium text-slate-500">Keep me logged in.</label>
             </div>
 
-            <button className="w-full h-[64px] bg-[#FF6A13] text-white rounded-lg font-bold text-[18px] hover:bg-[#E65F11] transition-all flex items-center justify-center shadow-lg shadow-orange-500/10">
-              Sign In
+            <button
+              disabled={loading}
+              className="w-full h-[64px] bg-[#FF6A13] text-white rounded-lg font-bold text-[18px] hover:bg-[#E65F11] transition-all flex items-center justify-center shadow-lg shadow-orange-500/10 disabled:opacity-50"
+            >
+              {loading ? <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-8 text-center space-y-8">
-            <Link href="#" className="text-[16px] font-semibold text-[#FF6A13] underline hover:text-[#E65F11]">
+            <Link href="/auth/forgot-password" className="text-[16px] font-semibold text-[#FF6A13] underline hover:text-[#E65F11]">
               Forgot password?
             </Link>
 
@@ -139,7 +170,7 @@ export default function LoginPage() {
           {/* Main Logo for Brand Panel
           <Logo iconOnly className="scale-[2.5] mb-16" /> */}
 
-          <div className="space-y-6">
+          <div className="space-y-6 ">
             <h2 className="text-[56px] font-semibold leading-tight">Join the Hunt</h2>
             <p className="text-[24px] font-medium opacity-80 max-w-[350px] mx-auto">Ready to experience the ultimate savings network?</p>
           </div>

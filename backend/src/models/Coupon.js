@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const CouponSchema = new mongoose.Schema({
+  admitadId: { type: String, unique: true, sparse: true },
+  type: { type: String, enum: ['coupon', 'deal'], default: 'coupon' },
   title: { type: String, required: true },
   description: { type: String },
   code: { type: String },

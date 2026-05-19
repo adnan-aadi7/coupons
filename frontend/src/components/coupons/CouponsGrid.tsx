@@ -8,9 +8,10 @@ interface CouponsGridProps {
   coupons: any[];
   isLoading: boolean;
   onOpenDeal: (coupon: any) => void;
+  itemType?: 'coupons' | 'deals';
 }
 
-export default function CouponsGrid({ coupons, isLoading, onOpenDeal }: CouponsGridProps) {
+export default function CouponsGrid({ coupons, isLoading, onOpenDeal, itemType = 'deals' }: CouponsGridProps) {
   const [visibleCount, setVisibleCount] = useState(6);
 
   const handleDealClick = (e: React.MouseEvent, coupon: any) => {
@@ -41,7 +42,7 @@ export default function CouponsGrid({ coupons, isLoading, onOpenDeal }: CouponsG
   if (!coupons || coupons.length === 0) {
     return (
       <div className="py-24 text-center border-2 border-dashed border-slate-100 rounded-[40px] text-slate-400 font-['Manrope'] font-bold">
-        No active deals found. Please check back later!
+        No active {itemType} found. Please check back later!
       </div>
     );
   }

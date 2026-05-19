@@ -13,19 +13,19 @@ const CATEGORIES = [
   },
   {
     id: 'tech',
-    title: 'Tech',
+    title: 'Tech & Electronics',
     subtitle: 'INNOVATION',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 'beauty',
-    title: 'Beauty',
+    title: 'Beauty & Cosmetics',
     subtitle: 'SELF-CARE',
     image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 'travel',
-    title: 'Travel',
+    title: 'Travel & Booking',
     subtitle: 'EXPERIENCES',
     image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80',
   },
@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 export default function CategoryExplorer() {
   return (
-    <section className="">
+    <section className="py-16 bg-[#F8F9FA]">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
 
         {/* Header */}
@@ -84,7 +84,7 @@ export default function CategoryExplorer() {
         {/* 4x2 Elegant Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {CATEGORIES.map((cat, i) => (
-            <Link key={cat.id} href={`/category/${cat.id}`}>
+            <Link key={cat.id} href={`/coupons?category=${cat.id}`}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 15 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}

@@ -9,7 +9,7 @@ interface CategoryHeroProps {
 
 export default function CategoryHero({ onSearch }: CategoryHeroProps) {
   return (
-    <div className="text-center space-y-8 mb-20">
+    <div className="text-center space-y-6 sm:space-y-8 mb-12 sm:mb-20 px-4">
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -19,23 +19,23 @@ export default function CategoryHero({ onSearch }: CategoryHeroProps) {
         Browse by Interest
       </motion.div>
       
-      <h1 className="text-[48px] md:text-[64px] font-black text-[#1A1C1C] tracking-tight leading-tight">
+      <h1 className="text-[32px] sm:text-[48px] md:text-[64px] font-black text-[#1A1C1C] tracking-tight leading-tight px-2">
         Shopping <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9800] to-[#F57C00]">Categories</span>
       </h1>
       
-      <p className="text-slate-500 text-[18px] max-w-[600px] mx-auto leading-relaxed font-medium">
+      <p className="text-slate-500 text-sm sm:text-[18px] max-w-[600px] mx-auto leading-relaxed font-medium px-4">
         Discover the best deals and cashback rewards across your favorite shopping categories.
       </p>
 
       {/* Search Bar */}
-      <div className="relative max-w-[650px] mx-auto mt-12 group">
-        <div className="absolute left-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#FF9800] transition-colors">
-          <Search className="w-6 h-6" />
+      <div className="relative max-w-[650px] mx-auto mt-8 sm:mt-12 group">
+        <div className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#FF9800] transition-colors">
+          <Search className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
         <input 
           type="text"
           placeholder="Search for a category..."
-          className="w-full h-[76px] bg-white rounded-3xl pl-16 pr-10 shadow-xl shadow-slate-100/50 border-2 border-transparent focus:border-[#FF9800]/20 focus:ring-0 transition-all text-lg font-bold text-[#1A1C1C]"
+          className="w-full h-[60px] sm:h-[76px] bg-white rounded-2xl sm:rounded-3xl pl-12 sm:pl-16 pr-10 shadow-xl shadow-slate-100/50 border-2 border-transparent focus:border-[#FF9800]/20 focus:ring-0 transition-all text-sm sm:text-lg font-bold text-[#1A1C1C] placeholder:text-slate-300"
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>

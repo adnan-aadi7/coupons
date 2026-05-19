@@ -1,17 +1,12 @@
+const Store = require('../models/Store');
+const Coupon = require('../models/Coupon');
+
 /**
- * productController.js
- * Fetches real product data from free public APIs:
- *  1. UPC Item DB (upcitemdb.com) — returns title, brand, images, and retailer offers
- *  2. Open Food Facts — fallback for food/grocery barcodes
+ * Shared helper to lookup product details from APIs and match local stores/coupons
+ * @param {string} barcode 
+ * @returns {Promise<Object|null>}
  */
-
-const lookupProduct = async (req, res) => {
-  const { barcode } = req.params;
-
-  if (!barcode) {
-    return res.status(400).json({ success: false, message: 'Barcode is required' });
-  }
-
+const getProductDetails = async (barcode) => {
   try {
     let product = null;
 
@@ -75,7 +70,133 @@ const lookupProduct = async (req, res) => {
       }
     }
 
-    // ── 3. Nothing found ─────────────────────────────────────────────────────
+    // ── 3. Scan local DB for matching Stores and active Coupons ─────────────
+    if (product) {
+      // Find matching Store by Brand Name or Slug (case-insensitive regex with word boundary)
+      const brandQuery = product.brand ? product.brand.trim() : '';
+      if (brandQuery) {
+        const localStore = await Store.findOne({
+          $or: [
+            { name: { $regex: new RegExp(`\\b${brandQuery}\\b`, 'i') } },
+            { slug: { $regex: new RegExp(`\\b${brandQuery}\\b`, 'i') } }
+          ]
+        });
+
+        if (localStore) {
+          // Fetch active coupons for this store
+          const activeCoupons = await Coupon.find({
+            store: { $regex: new RegExp(`^${localStore.name}$`, 'i') },
+            isActive: true
+          }).limit(5);
+
+          product.localStore = {
+            name: localStore.name,
+            slug: localStore.slug,
+            logoUrl: localStore.logoUrl,
+            cashbackRate: localStore.cashbackRate,
+            rating: localStore.rating,
+            description: localStore.description
+          };
+
+          product.localCoupons = activeCoupons.map(c => ({
+            _id: c._id,
+            title: c.title,
+            code: c.code,
+            isCode: c.isCode,
+            discountType: c.discountType,
+            discountValue: c.discountValue
+          }));
+
+          // Calculate a realistic reference price based on other retailers
+          const basePrice = (product.retailers && product.retailers.length > 0)
+            ? Math.min(...product.retailers.map(r => r.price))
+            : 0;
+
+          // Inject custom authorized retailer representing our partner platform store at the absolute top
+          const cashbackStr = localStore.cashbackRate > 0 ? `${localStore.cashbackRate}%` : '';
+
+          product.retailers.unshift({
+            name: `${localStore.name} (Authorized Partner)`,
+            price: basePrice > 0 ? basePrice * (1 - (localStore.cashbackRate / 100)) : 0,
+            originalPrice: basePrice > 0 ? basePrice : undefined,
+            discount: cashbackStr ? `🔥 Extra ${cashbackStr} Cashback` : 'Verified Deal',
+            cashback: cashbackStr || undefined,
+            status: 'In Stock',
+            couponCode: activeCoupons.length > 0 ? activeCoupons[0].code : undefined,
+            couponId: activeCoupons.length > 0 ? activeCoupons[0]._id : undefined,
+            url: `/store/${localStore.slug}` // Dynamic local redirect link
+          });
+        }
+      }
+
+      // ── 3b. Smart Fallbacks: Category match or Popular general stores ─────
+      if (!product.localStore) {
+        // Try Category search first
+        const categoryQuery = product.category ? product.category.trim() : '';
+        let fallbackStores = [];
+
+        if (categoryQuery && categoryQuery.toLowerCase() !== 'general') {
+          fallbackStores = await Store.find({
+            category: { $regex: new RegExp(categoryQuery, 'i') }
+          }).limit(3);
+        }
+
+        // Secondary fallback: popular general platform stores
+        if (fallbackStores.length === 0) {
+          fallbackStores = await Store.find({
+            name: { $in: ['eBay', 'AliExpress', 'Walmart', 'Target'] }
+          }).limit(3);
+        }
+
+        if (fallbackStores.length > 0) {
+          const storeNames = fallbackStores.map(s => s.name);
+          const fallbackCoupons = await Coupon.find({
+            store: { $in: storeNames },
+            isActive: true
+          }).limit(4);
+
+          product.fallbackCategory = categoryQuery && categoryQuery.toLowerCase() !== 'general' 
+            ? categoryQuery 
+            : 'Popular Partner';
+
+          product.localCoupons = fallbackCoupons.map(c => {
+            const matchingStore = fallbackStores.find(s => s.name.toLowerCase() === c.store.toLowerCase());
+            return {
+              _id: c._id,
+              title: c.title,
+              code: c.code,
+              isCode: c.isCode,
+              discountType: c.discountType,
+              discountValue: c.discountValue,
+              storeInfo: {
+                name: c.store,
+                slug: matchingStore ? matchingStore.slug : c.store.toLowerCase().replace(/\s+/g, '-'),
+                logoUrl: matchingStore ? matchingStore.logoUrl : undefined,
+                cashbackRate: matchingStore ? matchingStore.cashbackRate : 0
+              }
+            };
+          });
+        }
+      }
+    }
+
+    return product;
+  } catch (err) {
+    console.error('[getProductDetails] Error:', err);
+    return null;
+  }
+};
+
+const lookupProduct = async (req, res) => {
+  const { barcode } = req.params;
+
+  if (!barcode) {
+    return res.status(400).json({ success: false, message: 'Barcode is required' });
+  }
+
+  try {
+    const product = await getProductDetails(barcode);
+
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -91,4 +212,4 @@ const lookupProduct = async (req, res) => {
   }
 };
 
-module.exports = { lookupProduct };
+module.exports = { lookupProduct, getProductDetails };

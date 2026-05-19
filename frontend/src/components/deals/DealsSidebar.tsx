@@ -18,7 +18,7 @@ export default function DealsSidebar({
   onVerificationToggle 
 }: DealsSidebarProps) {
   return (
-    <aside className="lg:col-span-3 space-y-10 sticky top-32">
+    <aside className="hidden lg:block lg:col-span-3 space-y-10 sticky top-32">
       
       {/* Filters Card */}
       <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-10">

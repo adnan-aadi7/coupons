@@ -11,6 +11,7 @@ interface Retailer {
   originalPrice?: number;
   discount?: string;
   couponCode?: string;
+  couponId?: string;
   cashback?: string;
   lastUpdated?: string;
   status: string;
@@ -26,6 +27,29 @@ interface Product {
   image: string | null;
   retailers: Retailer[];
   source: string;
+  localStore?: {
+    name: string;
+    slug: string;
+    logoUrl?: string;
+    cashbackRate: number;
+    rating: number;
+    description?: string;
+  };
+  localCoupons?: {
+    _id: string;
+    title: string;
+    code?: string;
+    isCode: boolean;
+    discountType?: string;
+    discountValue?: number;
+    storeInfo?: {
+      name: string;
+      slug: string;
+      logoUrl?: string;
+      cashbackRate: number;
+    };
+  }[];
+  fallbackCategory?: string;
 }
 
 const statusColorMap: Record<string, string> = {
@@ -40,39 +64,26 @@ function getStatusColor(status: string): string {
   return statusColorMap[status] || 'bg-slate-100 text-slate-500';
 }
 
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { searchByBarcode } from '@/redux/slices/couponSlice';
+
 export default function ScanResultDisplay() {
   const params = useParams();
   const router = useRouter();
   const barcode = typeof params.barcode === 'string' ? decodeURIComponent(params.barcode) : '';
-
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const { searchResults: product, loading, error } = useSelector((state: RootState) => state.coupons);
   const [visibleCount, setVisibleCount] = useState(6);
+  const [activeCopiedCoupon, setActiveCopiedCoupon] = useState<{ code: string; title: string; storeName: string; cashbackRate: number } | null>(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
-    if (!barcode) return;
-
-    const fetchProduct = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/lookup/${encodeURIComponent(barcode)}`);
-        const data = await res.json();
-        if (data.success) {
-          setProduct(data.product);
-        } else {
-          setError(data.message || 'Product not found.');
-        }
-      } catch (err) {
-        setError('Failed to fetch product data. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [barcode]);
+    if (barcode) {
+      dispatch(searchByBarcode(barcode));
+    }
+  }, [barcode, dispatch]);
 
   if (loading) {
     return (
@@ -105,11 +116,12 @@ export default function ScanResultDisplay() {
     );
   }
 
-  const cheapestRetailer = product.retailers.length > 0
-    ? product.retailers.reduce((min, r) => r.price < min.price ? r : min, product.retailers[0])
-    : null;
+  const pricedRetailers = product.retailers.filter(r => r.price > 0);
+  const cheapestRetailer = pricedRetailers.length > 0
+    ? pricedRetailers.reduce((min, r) => r.price < min.price ? r : min, pricedRetailers[0])
+    : (product.retailers.length > 0 ? product.retailers[0] : null);
 
-  const bestPrice = cheapestRetailer?.price ?? null;
+  const bestPrice = (cheapestRetailer && cheapestRetailer.price > 0) ? cheapestRetailer.price : null;
   const hasMore = product.retailers.length > visibleCount;
 
   return (
@@ -198,16 +210,36 @@ export default function ScanResultDisplay() {
                 </div>
               )}
 
-              {/* Cashback */}
-              <div className="flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 mb-5">
-                <ShoppingCart className="w-5 h-5 text-[#FF9800] shrink-0" />
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Estimated Rewards</span>
-                  <span className="text-[#FF9800] font-black text-[16px]">
-                    {bestPrice ? `+$${(bestPrice * 0.05).toFixed(2)} Cashback` : 'Cashback may apply'}
-                  </span>
+              {/* Cashback Promo Banner */}
+              {product.localStore ? (
+                <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl px-5 py-4 mb-5 shadow-md shadow-orange-500/10">
+                  <div className="flex items-center gap-3">
+                    <ShoppingCart className="w-6 h-6 shrink-0" />
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-orange-100 block">Authorized Partner Offer</span>
+                      <span className="font-black text-[17px] leading-tight">
+                        Get {product.localStore.cashbackRate}% Cashback!
+                      </span>
+                    </div>
+                  </div>
+                  <a
+                    href={`/store/${product.localStore.slug}`}
+                    className="bg-white text-orange-600 font-extrabold text-[12px] uppercase tracking-wider px-4 py-2.5 rounded-xl hover:bg-slate-100 transition-colors shadow-sm shrink-0"
+                  >
+                    Shop Store
+                  </a>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 mb-5">
+                  <ShoppingCart className="w-5 h-5 text-[#FF9800] shrink-0" />
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Estimated Rewards</span>
+                    <span className="text-[#FF9800] font-black text-[16px]">
+                      {bestPrice ? `+$${(bestPrice * 0.05).toFixed(2)} Cashback` : 'Cashback may apply'}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {cheapestRetailer && cheapestRetailer.url !== '#' ? (
                 <a
@@ -244,6 +276,105 @@ export default function ScanResultDisplay() {
             </div>
           </motion.div>
         </div>
+
+        {/* Local Active Coupons Section */}
+        {product.localCoupons && product.localCoupons.length > 0 && (
+          <div className="mt-12 bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+              <div>
+                <span className="inline-flex items-center gap-1.5 bg-orange-100 text-[#FF9800] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-2">
+                  <Tag className="w-3.5 h-3.5" /> Coupons Mart verified
+                </span>
+                <h2 className="text-[26px] font-black text-[#1A1C1C] tracking-tight">
+                  {product.localStore 
+                    ? `Active Coupons for ${product.localStore.name}` 
+                    : `Trending ${product.fallbackCategory || 'Popular'} Deals`}
+                </h2>
+                <p className="text-slate-400 text-[14px]">
+                  {product.localStore 
+                    ? "Use these discount promo codes at checkout to maximize your cashback savings!"
+                    : `We don't have coupons for ${product.brand} yet, but here are the best category deals!`}
+                </p>
+              </div>
+              <a
+                href={product.localStore ? `/store/${product.localStore.slug}` : '/stores'}
+                className="inline-flex items-center gap-2 bg-[#FF6A13] hover:bg-[#E65F11] text-white font-bold text-[14px] px-6 py-3.5 rounded-2xl transition-all shadow-md shadow-orange-500/10 hover:shadow-orange-500/20 active:scale-[0.98] shrink-0"
+              >
+                {product.localStore ? 'Go to Store Details' : 'Browse All Stores'} <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {product.localCoupons.map((coupon: any) => {
+                const storeSlug = coupon.storeInfo?.slug || (product.localStore ? product.localStore.slug : '');
+                const storeName = coupon.storeInfo?.name || (product.localStore ? product.localStore.name : '');
+                const cashbackRate = coupon.storeInfo?.cashbackRate || (product.localStore ? product.localStore.cashbackRate : 0);
+
+                return (
+                  <div
+                    key={coupon._id}
+                    className="bg-[#FDF4E5]/40 rounded-2xl p-6 border border-[#FDF4E5] hover:border-[#FF9800] transition-all flex flex-col justify-between group"
+                  >
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className="inline-block bg-[#FF9800]/10 text-[#FF9800] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">
+                          {coupon.discountType === 'percentage'
+                            ? `${coupon.discountValue}% OFF`
+                            : coupon.discountType === 'fixed'
+                            ? `$${coupon.discountValue} OFF`
+                            : 'HOT DEAL'}
+                        </span>
+                        {storeName && (
+                          <span className="text-[11px] font-bold text-slate-500">
+                            at {storeName} ({cashbackRate}% Cashback)
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-extrabold text-[17px] text-[#1A1C1C] leading-snug group-hover:text-[#FF9800] transition-colors">
+                        {coupon.title}
+                      </h3>
+                    </div>
+
+                    {coupon.code ? (
+                      <div
+                        onClick={() => {
+                          const trackingUrl = `${API_URL}/track/${coupon._id}`;
+                          navigator.clipboard.writeText(coupon.code);
+                          setActiveCopiedCoupon({
+                            code: coupon.code,
+                            title: coupon.title,
+                            storeName: storeName || 'Partner Store',
+                            cashbackRate: cashbackRate
+                          });
+                          window.open(trackingUrl, '_blank');
+                        }}
+                        className="flex items-center justify-between gap-3 bg-white border border-slate-200 px-4 py-3 rounded-xl cursor-pointer hover:border-[#FF9800] hover:bg-[#FDF4E5]/20 transition-all"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Tag className="w-4 h-4 text-slate-400" />
+                          <span className="font-bold text-[14px] text-slate-700 tracking-wider font-mono">{coupon.code}</span>
+                        </div>
+                        <span className="text-[11px] font-black text-[#FF9800] uppercase tracking-widest">
+                          Copy Code
+                        </span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          const trackingUrl = `${API_URL}/track/${coupon._id}`;
+                          window.open(trackingUrl, '_blank');
+                        }}
+                        className="w-full flex items-center justify-center bg-white border border-slate-200 hover:border-slate-300 font-bold text-[13px] uppercase tracking-widest py-3 rounded-xl transition-all"
+                      >
+                        Activate Deal
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Retailer Comparison */}
         {product.retailers.length > 0 && (
@@ -289,9 +420,15 @@ export default function ScanResultDisplay() {
 
                       <div className="space-y-4 mb-6">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-[32px] font-black text-[#1A1C1C] tracking-tighter">${retailer.price.toFixed(2)}</span>
-                          {retailer.originalPrice && (
-                            <span className="text-slate-300 text-[16px] line-through">${retailer.originalPrice.toFixed(2)}</span>
+                          {retailer.price > 0 ? (
+                            <>
+                              <span className="text-[32px] font-black text-[#1A1C1C] tracking-tighter">${retailer.price.toFixed(2)}</span>
+                              {retailer.originalPrice && (
+                                <span className="text-slate-300 text-[16px] line-through">${retailer.originalPrice.toFixed(2)}</span>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-[22px] font-black text-[#FF9800] tracking-tight uppercase">Special Offer</span>
                           )}
                         </div>
 
@@ -305,7 +442,21 @@ export default function ScanResultDisplay() {
 
                         {/* Coupon Code */}
                         {retailer.couponCode && (
-                          <div className="flex items-center justify-between gap-2 bg-slate-50 border border-dashed border-slate-200 px-4 py-2.5 rounded-xl group/coupon cursor-pointer hover:border-[#FF9800] transition-colors">
+                          <div
+                            onClick={() => {
+                              navigator.clipboard.writeText(retailer.couponCode);
+                              setActiveCopiedCoupon({
+                                code: retailer.couponCode,
+                                title: retailer.discount || 'Verified Deal',
+                                storeName: retailer.name.replace(' (Authorized Partner)', ''),
+                                cashbackRate: parseFloat(retailer.cashback || '0') || 0
+                              });
+                              if (retailer.couponId) {
+                                window.open(`${API_URL}/track/${retailer.couponId}`, '_blank');
+                              }
+                            }}
+                            className="flex items-center justify-between gap-2 bg-slate-50 border border-dashed border-slate-200 px-4 py-2.5 rounded-xl group/coupon cursor-pointer hover:border-[#FF9800] transition-colors"
+                          >
                             <div className="flex items-center gap-2">
                               <Tag className="w-3.5 h-3.5 text-slate-400" />
                               <span className="text-[12px] font-black text-[#1A1C1C] uppercase tracking-wider">{retailer.couponCode}</span>
@@ -324,7 +475,7 @@ export default function ScanResultDisplay() {
                       </div>
 
                       <a
-                        href={retailer.url}
+                        href={retailer.couponId ? `${API_URL}/track/${retailer.couponId}` : retailer.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`w-full flex items-center justify-center gap-2 font-black text-[13px] uppercase tracking-widest py-4 rounded-xl transition-all shadow-lg ${
@@ -368,6 +519,74 @@ export default function ScanResultDisplay() {
           </div>
         )}
       </div>
+
+      {/* Coupon Copy Success Glassmorphic Modal */}
+      <AnimatePresence>
+        {activeCopiedCoupon && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[9999] px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white rounded-[32px] max-w-[480px] w-full p-8 shadow-2xl border border-slate-100 relative overflow-hidden"
+            >
+              {/* Confetti Background Gradient */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
+              
+              <div className="flex flex-col items-center text-center mt-2">
+                <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-5 border border-green-100">
+                  <Tag className="w-8 h-8 text-green-500" />
+                </div>
+                
+                <h3 className="text-[24px] font-black text-[#1A1C1C] leading-tight mb-2">
+                  Coupon Code Copied!
+                </h3>
+                <p className="text-slate-400 text-[14px] leading-relaxed mb-6">
+                  We have copied the promo code and opened <span className="font-extrabold text-[#1A1C1C]">{activeCopiedCoupon.storeName}</span> in a new tab so you can shop.
+                </p>
+
+                {/* Promo Code Box */}
+                <div className="w-full bg-[#FDF4E5]/40 border-2 border-dashed border-[#FF9800]/30 rounded-2xl p-5 mb-6 relative group">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">Promo Code</span>
+                  <span className="text-[28px] font-mono font-black text-[#FF9800] tracking-widest selection:bg-transparent">
+                    {activeCopiedCoupon.code}
+                  </span>
+                  <div className="absolute bottom-2 right-4 text-[9px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-md shadow-sm border border-slate-100">
+                    Copied to Clipboard
+                  </div>
+                </div>
+
+                {/* Cashback Activation Alert */}
+                {activeCopiedCoupon.cashbackRate > 0 && (
+                  <div className="flex items-start gap-3 bg-green-50 border border-green-100/50 rounded-2xl p-4 text-left w-full mb-8">
+                    <Shield className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-black text-[12px] text-green-800 uppercase tracking-widest block mb-0.5">
+                        Cashback Active
+                      </span>
+                      <p className="text-[11px] text-green-600 leading-normal">
+                        Earn <span className="font-black">{activeCopiedCoupon.cashbackRate}% Cashback</span> on your purchase! Paste this code at checkout to claim extra savings.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setActiveCopiedCoupon(null)}
+                  className="w-full bg-[#1A1C1C] hover:bg-[#FF9800] text-white font-bold text-[15px] py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98]"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -40,22 +40,22 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-xl bg-background rounded-[40px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] border border-white/10"
+          className="relative w-full max-w-xl bg-white rounded-[40px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(15,23,42,0.15)] border border-slate-100"
         >
           {/* Top Branding Section */}
-          <div className="bg-white/5 border-b border-white/10 p-8 flex flex-col items-center justify-center relative">
+          <div className="bg-slate-50/60 border-b border-slate-100 p-8 flex flex-col items-center justify-center relative">
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors z-10"
+              className="absolute top-6 right-6 p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors z-10 text-slate-500 hover:text-slate-800"
             >
-              <X className="w-5 h-5 text-foreground" />
+              <X className="w-5 h-5" />
             </button>
             
-            <div className="w-20 h-20 bg-white rounded-3xl p-4 shadow-xl shadow-black/5 mb-4 flex items-center justify-center">
+            <div className="w-20 h-20 bg-white rounded-3xl p-4 shadow-lg shadow-slate-100 border border-slate-100 mb-4 flex items-center justify-center">
               {coupon.brandLogo ? (
-                <img src={coupon.brandLogo} alt={coupon.brand} className="max-w-full max-h-full object-contain" />
+                <img src={coupon.brandLogo} alt={coupon.store} className="max-w-full max-h-full object-contain" />
               ) : (
-                <Tag className="w-8 h-8 text-black/10" />
+                <Tag className="w-8 h-8 text-slate-300" />
               )}
             </div>
             
@@ -67,10 +67,10 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
 
           {/* Content Section */}
           <div className="px-10 pb-12 pt-8 text-center">
-            <h2 className="text-3xl font-black text-foreground leading-tight mb-3">
+            <h2 className="text-3xl font-black text-slate-900 leading-tight mb-3">
               {coupon.title}
             </h2>
-            <p className="text-white/40 font-bold mb-10 max-w-xs mx-auto">
+            <p className="text-slate-500 font-semibold mb-10 max-w-xs mx-auto">
               Copy this code and apply it during checkout on {coupon.store}.
             </p>
 
@@ -78,16 +78,16 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
               <div className="space-y-8">
                 {/* Code Box */}
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
-                  <div className="relative bg-white/5 border-2 border-dashed border-primary p-2 rounded-[32px] flex items-center justify-between overflow-hidden">
-                    <span className="flex-1 text-2xl font-black font-mono tracking-[0.2em] text-foreground pl-6">
+                  <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full" />
+                  <div className="relative bg-slate-50 border-2 border-dashed border-primary p-2 rounded-[32px] flex items-center justify-between overflow-hidden">
+                    <span className="flex-1 text-2xl font-black font-mono tracking-[0.2em] text-slate-900 pl-6">
                       {coupon.code}
                     </span>
                     <button
                       onClick={handleCopy}
                       className={`
                         flex items-center gap-2 px-8 py-4 rounded-[24px] font-black text-xs uppercase tracking-widest transition-all
-                        ${copied ? 'bg-green-500 text-white' : 'bg-primary text-white hover:bg-emerald-400 shadow-xl shadow-primary/20'}
+                        ${copied ? 'bg-green-500 text-white' : 'bg-primary text-white hover:bg-emerald-600 shadow-xl shadow-primary/20'}
                       `}
                     >
                       {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -100,12 +100,12 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
                   <a
                     href={coupon.link}
                     target="_blank"
-                    className="flex w-full items-center justify-center gap-3 bg-white/10 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/20 transition-all group"
+                    className="flex w-full items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all group shadow-lg shadow-slate-900/10"
                   >
                     Go to {coupon.store} Store
                     <ExternalLink className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
-                  <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Offer valid while supplies last. Exclusions apply.
                   </p>
                 </div>
@@ -117,12 +117,12 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
                     <Zap className="w-6 h-6 fill-current" />
                     Deal Activated
                   </p>
-                  <p className="text-sm text-black/40 font-bold mt-2">No code required. Savings applied at checkout.</p>
+                  <p className="text-sm text-slate-500 font-semibold mt-2">No code required. Savings applied at checkout.</p>
                 </div>
                 <a
                   href={coupon.link}
                   target="_blank"
-                  className="flex w-full items-center justify-center gap-3 bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-xl shadow-primary/20"
+                  className="flex w-full items-center justify-center gap-3 bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-primary/20"
                 >
                   Shop Now at {coupon.store}
                 </a>

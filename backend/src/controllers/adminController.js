@@ -1,5 +1,23 @@
 const Click = require('../models/Click');
 const User = require('../models/User');
+const admitadService = require('../services/admitadService');
+
+/**
+ * @desc    Sync coupons from Admitad API
+ * @route   POST /api/admin/sync-admitad
+ */
+exports.syncAdmitad = async (req, res) => {
+  try {
+    const result = await admitadService.syncAdmitadCoupons();
+    if (result.success) {
+      res.status(200).json({ success: true, message: `Successfully synced ${result.count} coupons from Admitad.` });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 /**
  * @desc    Simulate an affiliate network conversion (Demo Tool)
@@ -47,6 +65,27 @@ exports.simulateConversion = async (req, res) => {
       }
     });
 
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * @desc    Get all click logs for admin dashboard simulation
+ * @route   GET /api/admin/clicks
+ */
+exports.getAdminClicks = async (req, res) => {
+  try {
+    const clicks = await Click.find({})
+      .populate('userId', 'name email')
+      .sort({ createdAt: -1 })
+      .limit(100);
+    
+    res.status(200).json({
+      success: true,
+      count: clicks.length,
+      data: clicks
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
