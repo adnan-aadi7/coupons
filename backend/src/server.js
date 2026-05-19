@@ -53,7 +53,12 @@ cron.schedule('0 */12 * * *', async () => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Automated 12-hour sync scheduler initialized successfully.');
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log('Automated 12-hour sync scheduler initialized successfully.');
+  });
+}
+
+// Export for Vercel Serverless Deployment
+module.exports = app;
