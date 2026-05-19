@@ -17,6 +17,7 @@ interface User {
   favoriteStores?: any[];
   contactPreferences?: any;
   paymentMethods?: any[];
+  payoutMethods?: any[];
 }
 
 interface AuthState {
