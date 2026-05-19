@@ -388,7 +388,7 @@ export default function ScanResultDisplay() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
-                {product.retailers.slice(0, visibleCount).map((retailer, index) => {
+                {product.retailers.slice(0, visibleCount).map((retailer: any, index: number) => {
                   const isCheapest = cheapestRetailer?.name === retailer.name;
                   const isSoldOut = ['Sold Out', 'Out of Stock'].includes(retailer.status);
                   return (
