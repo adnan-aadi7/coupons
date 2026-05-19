@@ -122,7 +122,8 @@ export default function CashbackGrid() {
   useEffect(() => {
     const fetchTopStores = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/stores');
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+        const res = await fetch(`${API_URL}/stores`);
         const data = await res.json();
         if (data.success && data.data) {
           // Sort by highest cashback rate and take top 4 stores

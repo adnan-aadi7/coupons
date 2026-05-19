@@ -21,7 +21,8 @@ export default function CouponsGrid({ coupons, isLoading, onOpenDeal, itemType =
       return;
     }
     // Track click and open modal
-    window.open(`http://localhost:5000/api/track/${coupon._id}`, '_blank');
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    window.open(`${API_URL}/track/${coupon._id}`, '_blank');
     onOpenDeal(coupon);
   };
 

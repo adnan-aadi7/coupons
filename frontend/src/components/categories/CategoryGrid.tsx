@@ -44,7 +44,8 @@ export default function CategoryGrid({ searchQuery }: { searchQuery: string }) {
   useEffect(() => {
     const fetchCouponCounts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/coupons?limit=1000');
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+        const res = await fetch(`${API_URL}/coupons?limit=1000`);
         const data = await res.json();
         if (data.success && data.data) {
           const coupons = data.data;

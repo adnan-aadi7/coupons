@@ -39,7 +39,8 @@ export default function CouponCard({ coupon, idx, onOpenDeal }: CouponCardProps)
       return;
     }
     // 1. Open retailer in new tab
-    window.open(`http://localhost:5000/api/track/${coupon._id}`, '_blank');
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    window.open(`${API_URL}/track/${coupon._id}`, '_blank');
     // 2. Open modal in current tab
     onOpenDeal(coupon);
   };

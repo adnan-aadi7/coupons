@@ -21,7 +21,8 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
       window.open(coupon.printableUrl || '#', '_blank');
       return;
     }
-    window.open(`http://localhost:5000/api/track/${coupon._id}`, '_blank');
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    window.open(`${API_URL}/track/${coupon._id}`, '_blank');
     onOpenDeal(coupon);
   };
 

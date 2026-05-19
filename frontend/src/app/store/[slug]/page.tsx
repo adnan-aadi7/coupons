@@ -11,7 +11,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const storeNameFallback = slug.replace(/-/g, ' ');
 
   try {
-    const res = await fetch(`http://localhost:5000/api/stores/${slug}`, { 
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    const res = await fetch(`${API_URL}/stores/${slug}`, { 
       next: { revalidate: 3600 } // Cache for 1 hour
     });
     
@@ -46,7 +47,8 @@ export default async function StoreDetailsPage({ params }: Props) {
 
   // Fetch Store Details
   try {
-    const storeRes = await fetch(`http://localhost:5000/api/stores/${slug}`, { 
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    const storeRes = await fetch(`${API_URL}/stores/${slug}`, { 
       next: { revalidate: 3600 } 
     });
     if (storeRes.ok) {
@@ -62,7 +64,8 @@ export default async function StoreDetailsPage({ params }: Props) {
   // Fetch Coupons for this store
   try {
     const queryStoreName = store ? store.name : storeNameFallback;
-    const couponsRes = await fetch(`http://localhost:5000/api/coupons?store=${encodeURIComponent(queryStoreName)}&sort=popularity`, {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+    const couponsRes = await fetch(`${API_URL}/coupons?store=${encodeURIComponent(queryStoreName)}&sort=popularity`, {
       next: { revalidate: 300 } // Cache for 5 minutes
     });
     if (couponsRes.ok) {

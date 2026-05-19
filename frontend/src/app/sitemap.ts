@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic store pages
   let storePages: MetadataRoute.Sitemap = [];
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
     const res = await fetch(`${API_URL}/coupons`, { next: { revalidate: 3600 } });
     if (res.ok) {
       const data = await res.json();

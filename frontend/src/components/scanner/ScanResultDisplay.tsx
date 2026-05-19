@@ -77,7 +77,7 @@ export default function ScanResultDisplay() {
   const { searchResults: product, loading, error } = useSelector((state: RootState) => state.coupons);
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeCopiedCoupon, setActiveCopiedCoupon] = useState<{ code: string; title: string; storeName: string; cashbackRate: number } | null>(null);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
 
   useEffect(() => {
     if (barcode) {
