@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { requestWithdrawal, getMe } from '@/redux/slices/authSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wallet, TrendingUp, Clock, DollarSign, ArrowRight, X, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Wallet, TrendingUp, Clock, DollarSign, ArrowRight, X, AlertCircle, CheckCircle2, Loader2, Shield } from 'lucide-react';
 
 interface WalletOverviewProps {
   user: any;
