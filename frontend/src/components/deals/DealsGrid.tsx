@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Clock, Users, Zap, ShieldCheck, ArrowRight } from 'lucide-react';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface DealsGridProps {
   coupons: any[];
@@ -40,7 +41,9 @@ export default function DealsGrid({ coupons, isLoading, onOpenDeal }: DealsGridP
             <div className="absolute top-4 left-4 z-20">
               <div className="bg-white rounded-xl p-1.5 shadow-lg border border-slate-100">
                 <img 
-                  src={`https://logo.clearbit.com/${coupon.store?.toLowerCase().replace(/\s+/g, '') || 'shop'}.com`} 
+                  src={coupon.brandLogo 
+                    ? getProxyLogoUrl(coupon.brandLogo, coupon.store?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'shop') 
+                    : `https://logo.clearbit.com/${coupon.store?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'shop'}.com`} 
                   alt={coupon.store}
                   className="w-8 h-8 object-contain"
                   onError={(e: any) => e.target.src = 'https://www.google.com/s2/favicons?domain=shop.com&sz=64'}

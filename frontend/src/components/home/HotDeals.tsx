@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Focus, ArrowRight, Zap, Flame, Ticket, Clock, Users } from 'lucide-react';
 import Link from 'next/link';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface HotDealsProps {
   deals: any[];
@@ -92,8 +93,10 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
               }
             }
 
-            const cleanStoreName = storeName.toLowerCase().replace(/\s+/g, '');
-            const logoUrl = `https://logo.clearbit.com/${cleanStoreName}.com`;
+            const cleanStoreName = storeName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const logoUrl = deal.brandLogo 
+              ? getProxyLogoUrl(deal.brandLogo, cleanStoreName) 
+              : `https://logo.clearbit.com/${cleanStoreName}.com`;
 
             return (
               <motion.div

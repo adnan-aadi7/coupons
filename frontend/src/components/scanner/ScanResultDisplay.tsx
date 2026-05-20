@@ -75,7 +75,7 @@ export default function ScanResultDisplay() {
   const barcode = typeof params.barcode === 'string' ? decodeURIComponent(params.barcode) : '';
   
   const dispatch = useDispatch<AppDispatch>();
-  const { closeScanner } = useScanner();
+  const { closeScanner, stopScanLoading } = useScanner();
   const { searchResults: product, loading, error } = useSelector((state: RootState) => state.coupons);
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeCopiedCoupon, setActiveCopiedCoupon] = useState<{ code: string; title: string; storeName: string; cashbackRate: number } | null>(null);
@@ -90,8 +90,9 @@ export default function ScanResultDisplay() {
   useEffect(() => {
     if (!loading) {
       closeScanner();
+      stopScanLoading();
     }
-  }, [loading, closeScanner]);
+  }, [loading, closeScanner, stopScanLoading]);
 
   if (loading) {
     return (

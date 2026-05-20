@@ -10,6 +10,7 @@ const CouponSchema = new mongoose.Schema({
   store: { type: String, required: true },
   brand: { type: String },
   brandLogo: { type: String },
+  bannerImage: { type: String },
   isCode: { type: Boolean },
   terms: { type: String },
   verified: { type: Boolean },

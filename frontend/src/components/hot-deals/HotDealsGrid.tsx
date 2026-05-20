@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ShieldCheck, ArrowRight, Clock, Users, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface HotDealCardProps {
   coupon: any;
@@ -12,8 +13,12 @@ interface HotDealCardProps {
 
 function HotDealCard({ coupon, idx, onOpenDeal }: HotDealCardProps) {
   const brandName = coupon.store || 'Elite Brand';
-  const cleanDomain = brandName.toLowerCase().trim().replace(/\s+/g, '') + ".com";
-  const [logoUrl, setLogoUrl] = useState(`https://logo.clearbit.com/${cleanDomain}`);
+  const cleanSlug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const [logoUrl, setLogoUrl] = useState(
+    coupon.brandLogo 
+      ? getProxyLogoUrl(coupon.brandLogo, cleanSlug) 
+      : `https://logo.clearbit.com/${cleanSlug}.com`
+  );
 
   return (
     <motion.div

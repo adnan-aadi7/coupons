@@ -32,12 +32,23 @@ async function run() {
     const adspaceId = websitesRes.data.results[0].id;
     console.log(`Adspace ID: ${adspaceId}`);
 
-    // Try a few active campaign IDs from Admitad
-    const testCampaignIds = [17600, 33029, 144024]; // Shutterstock, KRONA, Serginnetti
+    // Fetch active campaigns
+    const campaignsRes = await axios.get(`https://api.admitad.com/advcampaigns/website/${adspaceId}/`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+      params: { limit: 100, connection_status: 'active' }
+    });
     
-    for (const campId of testCampaignIds) {
+    const activeCamps = campaignsRes.data.results || [];
+    console.log(`Active campaigns count: ${activeCamps.length}`);
+    
+    for (const item of activeCamps.slice(0, 5)) {
+      console.log('Campaign Item keys:', Object.keys(item));
+      console.log('Campaign Item detail:', JSON.stringify(item).slice(0, 300));
+      const campaign = item.campaign || item;
+      const campId = campaign.id;
+      const campName = campaign.name;
       const url = `https://api.admitad.com/banners/${campId}/website/${adspaceId}/`;
-      console.log(`Testing banners for campaign ${campId}: ${url}`);
+      console.log(`Testing banners for active campaign "${campName}" (${campId}): ${url}`);
       try {
         const bannersRes = await axios.get(url, {
           headers: { 'Authorization': `Bearer ${token}` },

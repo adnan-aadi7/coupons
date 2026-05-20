@@ -10,6 +10,7 @@ import DealModal from '@/components/deals/DealModal';
 import CashbackOverlay from '@/components/deals/CashbackOverlay';
 import StoreSidebar from './StoreSidebar';
 import StoreDealCard from './StoreDealCard';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 export default function StoreDetails() {
   const { slug } = useParams();
@@ -52,6 +53,17 @@ export default function StoreDetails() {
     setLogoError(false);
     setLogoRetry(0);
   }, [storeName]);
+
+  useEffect(() => {
+    if (coupons && coupons.length > 0) {
+      const couponWithLogo = coupons.find((c: any) => c.brandLogo);
+      if (couponWithLogo) {
+        const cleanSlug = storeName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        setCurrentLogo(getProxyLogoUrl(couponWithLogo.brandLogo, cleanSlug));
+        setLogoError(false);
+      }
+    }
+  }, [coupons, storeName]);
 
   const handleLogoError = () => {
     if (logoRetry === 0) {

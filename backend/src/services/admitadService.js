@@ -14,7 +14,7 @@ const getAccessToken = async () => {
     const auth = ADMITAD_BASE_AUTH || Buffer.from(`${ADMITAD_CLIENT_ID}:${ADMITAD_CLIENT_SECRET}`).toString('base64');
     
     const response = await axios.post('https://api.admitad.com/token/', 
-      `grant_type=client_credentials&client_id=${ADMITAD_CLIENT_ID}&scope=advcampaigns coupons websites public_data advcampaigns_for_website coupons_for_website`,
+      `grant_type=client_credentials&client_id=${ADMITAD_CLIENT_ID}&scope=advcampaigns coupons websites banners banners_for_website public_data advcampaigns_for_website coupons_for_website`,
       {
         headers: {
           'Authorization': `Basic ${auth}`,
@@ -83,12 +83,27 @@ exports.syncAdmitadCoupons = async () => {
       const storeSlug = camp.name.toLowerCase().replace(/\s+/g, '-');
       const logoUrl = camp.image || camp.logo || `https://logo.clearbit.com/${storeSlug}.com`;
       
+      // Dynamic banner fetch from Admitad for this active campaign
+      let bannerImageUrl = '';
+      try {
+        const bannersRes = await axios.get(`https://api.admitad.com/banners/${camp.id}/website/${adspaceId}/`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          params: { limit: 1 }
+        });
+        if (bannersRes.data.results && bannersRes.data.results.length > 0) {
+          bannerImageUrl = bannersRes.data.results[0].banner_image_url;
+        }
+      } catch (err) {
+        console.log(`Failed to fetch banners for campaign ${camp.name}: ${err.message}`);
+      }
+
       await Store.findOneAndUpdate(
         { slug: storeSlug },
         {
           name: camp.name,
           slug: storeSlug,
           logoUrl: logoUrl,
+          bannerImage: bannerImageUrl,
           category: camp.categories?.[0]?.name || 'General',
           verifiedStore: true,
           cashbackRate: parseFloat(camp.actions?.[0]?.payment_size) || 5,
@@ -152,6 +167,7 @@ exports.syncAdmitadCoupons = async () => {
         store: store.name,
         category: store.category,
         brandLogo: store.logoUrl,
+        bannerImage: store.bannerImage,
         expiryDate: ac.date_end,
         isHot: ac.is_exclusive || false,
         discountType: ac.discount_type === 'percentage' ? 'percentage' : 'fixed',

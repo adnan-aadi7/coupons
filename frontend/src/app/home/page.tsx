@@ -13,6 +13,7 @@ import DealModal from '@/components/deals/DealModal';
 import CategoryExplorer from '@/components/home/CategoryExplorer';
 import HotDeals from '@/components/home/HotDeals';
 import TopCoupons from '@/components/home/TopCoupons';
+import { useScanner } from '@/context/ScannerContext';
 import HowItWorksSection from '@/components/home/HowItWorksSection';
 
 export default function HomePage() {
@@ -20,6 +21,7 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
   const router = useRouter();
+  const { startScanLoading } = useScanner();
   
   const dispatch = useDispatch<AppDispatch>();
   const { coupons: trendingDeals, loading: isTrendingLoading } = useSelector((state: RootState) => state.coupons);
@@ -33,6 +35,7 @@ export default function HomePage() {
 
   const handleScanSuccess = async (barcode: string) => {
     setIsScanning(false);
+    startScanLoading();
     router.push(`/scan-result/${encodeURIComponent(barcode)}`);
   };
 
