@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Clock, Users } from 'lucide-react';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface StoreDealCardProps {
   coupon: any;
@@ -19,7 +20,7 @@ export default function StoreDealCard({ coupon, idx, onOpenDeal }: StoreDealCard
       {/* Left Image Area - Slightly Larger on Mobile */}
       <div className="w-24 h-24 sm:w-[220px] sm:h-[160px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-6 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
         <img 
-          src={coupon.brandLogo || `https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80`} 
+          src={coupon.brandLogo ? getProxyLogoUrl(coupon.brandLogo, (coupon.brand || coupon.store || 'brand').toLowerCase().replace(/[^a-z0-9]/g, '')) : `https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80`} 
           alt={coupon.title}
           className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105"
         />

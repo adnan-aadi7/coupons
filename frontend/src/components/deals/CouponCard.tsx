@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { saveCoupon } from '@/redux/slices/authSlice';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface CouponCardProps {
   coupon: any;
@@ -73,7 +74,7 @@ export default function CouponCard({ coupon, idx, onOpenDeal }: CouponCardProps)
         <div className="md:w-36 bg-slate-50/50 flex flex-col items-center justify-center p-4 border-b md:border-b-0 md:border-r border-slate-100 gap-1.5 shrink-0">
           <div className="relative">
             {coupon.brandLogo ? (
-              <img src={coupon.brandLogo} alt={coupon.brand} className="w-12 h-12 object-contain" />
+              <img src={getProxyLogoUrl(coupon.brandLogo, (coupon.brand || coupon.store || 'brand').toLowerCase().replace(/[^a-z0-9]/g, ''))} alt={coupon.brand} className="w-12 h-12 object-contain" />
             ) : (
               <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
                 <Tag className="w-6 h-6 text-slate-300" />

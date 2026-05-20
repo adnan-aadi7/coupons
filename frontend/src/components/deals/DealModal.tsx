@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Copy, ExternalLink, Check, ShieldCheck, Zap, Tag } from 'lucide-react';
 import { useState } from 'react';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface DealModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
             
             <div className="w-20 h-20 bg-white rounded-3xl p-4 shadow-lg shadow-slate-100 border border-slate-100 mb-4 flex items-center justify-center">
               {coupon.brandLogo ? (
-                <img src={coupon.brandLogo} alt={coupon.store} className="max-w-full max-h-full object-contain" />
+                <img src={getProxyLogoUrl(coupon.brandLogo, (coupon.store || coupon.brand || 'brand').toLowerCase().replace(/[^a-z0-9]/g, ''))} alt={coupon.store} className="max-w-full max-h-full object-contain" />
               ) : (
                 <Tag className="w-8 h-8 text-slate-300" />
               )}

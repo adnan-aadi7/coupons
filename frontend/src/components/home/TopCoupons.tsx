@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Copy, Clock, Zap, ArrowRight, ShieldCheck, Tag, Users } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Link from 'next/link';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface TopCouponsProps {
   activeCategory: string;
@@ -89,7 +90,7 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
                     <div className="w-24 h-24 sm:w-[160px] sm:h-[130px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
                       {coupon.brandLogo ? (
                         <img 
-                          src={coupon.brandLogo} 
+                          src={getProxyLogoUrl(coupon.brandLogo, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))} 
                           alt={storeName} 
                           className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
                           onError={(e) => {
