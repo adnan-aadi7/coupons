@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { SlidersHorizontal } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
@@ -21,6 +22,7 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   
+  const searchParams = useSearchParams();
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
   const [isCashbackActive, setIsCashbackActive] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -39,6 +41,12 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
       setIsFavorite(false);
     }
   }, [user, store]);
+
+  useEffect(() => {
+    if (searchParams.get('activate') === 'true') {
+      setIsCashbackActive(true);
+    }
+  }, [searchParams]);
 
   const handleToggleFavorite = async () => {
     if (!user) {
@@ -97,6 +105,7 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
         storeName={storeName}
         logoUrl={logoError ? fallbackLogoUrl : currentLogo}
         cashbackRate={cashbackText}
+        redirectUrl={store?.affiliateUrl || store?.baseUrl || `https://www.${domain}`}
       />
 
       <div className="max-w-[1300px] mx-auto px-4 sm:px-6 py-6 sm:py-12">

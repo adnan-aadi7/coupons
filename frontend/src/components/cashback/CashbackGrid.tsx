@@ -2,11 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Zap, ShieldCheck } from 'lucide-react';
-
+import { Zap, ShieldCheck, Loader2 } from 'lucide-react';
 import { getProxyLogoUrl } from '@/utils/imageHelper';
 
-function CashbackRow({ store, idx }: { store: any, idx: number }) {
+function CashbackRow({ store, idx, onActivate }: { store: any; idx: number; onActivate: (store: any) => void }) {
   const [logoUrl, setLogoUrl] = useState(getProxyLogoUrl(store.logoUrl, store.slug));
   const fallbackLogoUrl = `https://www.google.com/s2/favicons?domain=${store.slug}.com&sz=128`;
 
@@ -39,7 +38,6 @@ function CashbackRow({ store, idx }: { store: any, idx: number }) {
       return 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=800&q=80';
     if (cat.match(/flower|gift|bouquet|flora|plant/))
       return 'https://images.unsplash.com/photo-1490750967868-88df5691cc71?auto=format&fit=crop&w=800&q=80';
-    // Default - premium shopping
     return 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=800&q=80';
   };
 
@@ -51,11 +49,22 @@ function CashbackRow({ store, idx }: { store: any, idx: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: idx * 0.1, duration: 0.6 }}
-      className="bg-white rounded-[32px] p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row items-stretch gap-6 md:gap-0 mb-6 lg:mb-8 hover:shadow-[0_15px_40px_rgb(0,0,0,0.08)] transition-all md:h-[260px]"
+      onClick={() => onActivate(store)}
+      className="bg-white rounded-[32px] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col sm:flex-row items-stretch gap-6 sm:gap-0 mb-6 lg:mb-8 hover:shadow-[0_15px_40px_rgb(0,0,0,0.08)] transition-all sm:h-[260px] cursor-pointer group relative overflow-hidden"
     >
       {/* Left Info Box */}
-      <div className="w-full md:w-[40%] flex flex-col justify-between py-2 sm:py-4 px-2 sm:px-6 z-10 relative md:pr-14">
+      <div className="w-full sm:w-[45%] flex flex-col justify-between py-2 px-2 sm:px-6 z-10 relative sm:pr-14 text-left">
         <div>
+          {/* Mobile-only Logo */}
+          <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center justify-center p-2.5 sm:hidden mb-4">
+            <img 
+              src={logoUrl} 
+              alt={store.name} 
+              className="max-w-full max-h-full object-contain mix-blend-multiply" 
+              onError={() => setLogoUrl(fallbackLogoUrl)}
+            />
+          </div>
+
           <h4 className="text-slate-500 font-bold text-[14px] mb-2">{store.name}</h4>
           <h3 className="text-[32px] md:text-[38px] font-black text-[#1A1C1C] leading-none mb-3 tracking-tight">
             {store.cashbackRate}% Cashback
@@ -65,18 +74,17 @@ function CashbackRow({ store, idx }: { store: any, idx: number }) {
           </p>
         </div>
 
-        <div className="mt-8 md:mt-0">
-          <a 
-            href={`/store/${store.slug}`}
-            className="inline-block px-10 py-4 bg-[#1e2338] text-white rounded-full font-bold text-[14px] hover:bg-[#111424] transition-all shadow-md active:scale-95"
+        <div className="mt-6 sm:mt-0">
+          <button 
+            className="inline-block px-10 py-4 bg-[#1e2338] text-white rounded-full font-bold text-[14px] hover:bg-[#111424] transition-all shadow-md active:scale-95 group-hover:bg-[#FF9800]"
           >
             Activate cashback
-          </a>
+          </button>
         </div>
       </div>
 
-      {/* Right Visual Area */}
-      <div className="flex-1 w-full h-[220px] md:h-full relative block mt-8 md:mt-0">
+      {/* Right Visual Area (Hidden on mobile for maximum responsiveness) */}
+      <div className="hidden sm:block flex-1 w-full h-[220px] sm:h-full relative mt-8 sm:mt-0">
         {/* Image Wrapper */}
         <div className="w-full h-full rounded-[24px] overflow-hidden">
           <img 
@@ -88,7 +96,7 @@ function CashbackRow({ store, idx }: { store: any, idx: number }) {
         </div>
         
         {/* Overlapping Logo */}
-        <div className="absolute top-[-30px] left-6 md:top-1/2 md:-translate-y-1/2 md:left-[-30px] w-24 h-24 md:w-[110px] md:h-[110px] bg-white border border-slate-100 rounded-2xl md:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] flex items-center justify-center p-3 z-20 bg-clip-padding">
+        <div className="absolute top-[-30px] left-6 sm:top-1/2 sm:-translate-y-1/2 sm:left-[-30px] w-24 h-24 sm:w-[110px] sm:h-[110px] bg-white border border-slate-100 rounded-2xl sm:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] flex items-center justify-center p-3 z-20 bg-clip-padding">
           <img 
             src={logoUrl} 
             alt={store.name} 
@@ -154,7 +162,12 @@ export default function CashbackGrid() {
           ))
         ) : (
           visibleStores.map((store, i) => (
-            <CashbackRow key={store._id} store={store} idx={i} />
+            <CashbackRow 
+              key={store._id} 
+              store={store} 
+              idx={i} 
+              onActivate={(s) => window.location.href = `/store/${s.slug}?activate=true`}
+            />
           ))
         )}
         
@@ -165,6 +178,8 @@ export default function CashbackGrid() {
         )}
       </div>
 
+
+
       {/* Load More */}
       {!isLoading && hasMore && (
         <div className="flex flex-col items-center justify-center mt-16">
@@ -173,7 +188,7 @@ export default function CashbackGrid() {
           </p>
           <button
             onClick={() => setVisibleCount(prev => prev + 5)}
-            className="flex items-center gap-2 px-10 py-4 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm"
+            className="flex items-center gap-2 px-10 py-4 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm cursor-pointer"
           >
             Load 5 More Stores
           </button>

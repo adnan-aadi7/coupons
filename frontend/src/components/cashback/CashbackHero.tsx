@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles, Coins, Gift } from 'lucide-react';
 
 export default function CashbackHero() {
   return (
-    <div className="relative overflow-hidden bg-white py-12 md:py-20 border-b border-slate-100 mb-12">
+    <div className="relative overflow-hidden bg-white py-5 md:py-20 border-b border-slate-100 mb-5">
       {/* Background soft glowing lights */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-amber-400/5 rounded-full blur-[80px] md:blur-[120px] pointer-events-none" />
       <div className="absolute top-10 left-10 w-[200px] h-[200px] bg-red-500/5 rounded-full blur-[60px] pointer-events-none" />
@@ -14,7 +14,7 @@ export default function CashbackHero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
 
           {/* Left Column: Content */}
-          <div className="lg:col-span-6 space-y-6 md:space-y-8 text-left">
+          <div className="lg:col-span-6 space-y-6 md:space-y-8 text-center lg:text-left">
             {/* Elegant Premium Tag */}
             {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -31,7 +31,7 @@ export default function CashbackHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="text-[48px] sm:text-[64px] md:text-[84px] font-black text-[#1A1C1C] leading-[1.05] tracking-tighter"
+                className="text-[42px] sm:text-[64px] md:text-[84px] font-black text-[#1A1C1C] leading-[1.05] tracking-tighter"
               >
                 GET YOUR <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E53935] via-[#FF5722] to-[#FF9800]">REWARD.</span>
@@ -43,7 +43,7 @@ export default function CashbackHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="text-slate-400 text-sm sm:text-base md:text-lg font-medium max-w-[540px] leading-relaxed"
+              className="text-slate-400 text-sm sm:text-base md:text-lg font-medium max-w-[540px] leading-relaxed mx-auto lg:mx-0"
             >
               Shop from your favorite verified stores and unlock instant cashback rewards.
               Real money paid directly to your account. No hidden fees, no limits, 100% guaranteed.
@@ -54,7 +54,7 @@ export default function CashbackHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="flex flex-wrap items-center gap-6 pt-4"
+              className="flex flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-4 w-full"
             >
               {/* Lets Go Button */}
               <button
@@ -64,25 +64,25 @@ export default function CashbackHero() {
                     target.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="group flex items-center justify-center gap-3 px-10 py-5 bg-[#E53935] hover:bg-[#FF9800] text-white rounded-xl sm:rounded-2xl font-black text-sm md:text-base uppercase tracking-widest transition-all duration-300 shadow-xl shadow-red-500/10 active:scale-95 border border-white/10"
+                className="group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-4 sm:py-5 bg-[#E53935] hover:bg-[#FF9800] text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-base uppercase tracking-widest transition-all duration-300 shadow-xl shadow-red-500/10 active:scale-95 border border-white/10 shrink-0"
               >
                 <span>Let's Go</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1.5 transition-transform" />
               </button>
 
               {/* Trust Badge */}
-              <div className="flex items-center gap-3 py-2 px-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <Coins className="w-5 h-5 text-[#FF9800]" />
+              <div className="flex items-center gap-2 sm:gap-3 py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 shrink-0">
+                <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF9800]" />
                 <div className="text-left">
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Avg. Payout</div>
-                  <div className="text-xs font-bold text-slate-700">24-48 Hours</div>
+                  <div className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-wider leading-none mb-0.5 sm:mb-1">Avg. Payout</div>
+                  <div className="text-[10px] sm:text-xs font-bold text-slate-700 leading-none">24-48 Hours</div>
                 </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Column: 3D Illustration */}
-          <div className="lg:col-span-6 flex justify-center items-center relative">
+          {/* Right Column: 3D Illustration (Hidden on small screens) */}
+          <div className="hidden lg:flex lg:col-span-6 justify-center items-center relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
