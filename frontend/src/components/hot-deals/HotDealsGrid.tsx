@@ -15,8 +15,8 @@ function HotDealCard({ coupon, idx, onOpenDeal }: HotDealCardProps) {
   const brandName = coupon.store || 'Elite Brand';
   const cleanSlug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '');
   const [logoUrl, setLogoUrl] = useState(
-    coupon.brandLogo 
-      ? getProxyLogoUrl(coupon.brandLogo, cleanSlug) 
+    coupon.brandLogo
+      ? getProxyLogoUrl(coupon.brandLogo, cleanSlug)
       : `https://logo.clearbit.com/${cleanSlug}.com`
   );
 
@@ -31,12 +31,12 @@ function HotDealCard({ coupon, idx, onOpenDeal }: HotDealCardProps) {
     >
       {/* Logo Block (Slightly Larger) */}
       <div className="w-[90px] h-full shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center p-4 relative group-hover:bg-orange-50 transition-colors">
-         <img 
-           src={logoUrl} 
-           alt={brandName} 
-           className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-110 duration-700" 
-           onError={() => setLogoUrl(`https://www.google.com/s2/favicons?domain=${cleanDomain}&sz=128`)}
-         />
+        <img
+          src={logoUrl}
+          alt={brandName}
+          className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-110 duration-700"
+          onError={() => setLogoUrl(`https://www.google.com/s2/favicons?domain=${cleanSlug}.com&sz=128`)}
+        />
       </div>
 
       {/* Content Area */}
@@ -44,34 +44,34 @@ function HotDealCard({ coupon, idx, onOpenDeal }: HotDealCardProps) {
         <div className="flex items-center gap-2 mb-1">
           <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{brandName}</span>
           <div className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-md text-[8px] font-black uppercase flex items-center gap-1 border border-emerald-100">
-             <ShieldCheck className="w-2.5 h-2.5" />
-             VERIFIED
+            <ShieldCheck className="w-2.5 h-2.5" />
+            VERIFIED
           </div>
         </div>
         <h3 className="text-[16px] font-black text-[#1A1C1C] leading-tight truncate group-hover:text-orange-500 transition-colors mb-2">
           {coupon.title}
         </h3>
         <div className="flex items-center gap-4 text-[10px] font-bold text-slate-400">
-           <span className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" />
-              {Math.floor(Math.random() * 500 + 100)} Used
-           </span>
-           <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-orange-400" />
-              Expiring
-           </span>
+          <span className="flex items-center gap-1">
+            <Users className="w-3.5 h-3.5" />
+            {Math.floor(Math.random() * 500 + 100)} Used
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-orange-400" />
+            Expiring
+          </span>
         </div>
       </div>
 
       {/* Savings & Action */}
       <div className="shrink-0 flex items-center gap-6 pl-6 border-l border-slate-50">
-         <div className="text-right">
-            <div className="text-2xl font-black text-[#FF9800] leading-none">{coupon.discountValue || '25%'}</div>
-            <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mt-1">Savings</div>
-         </div>
-         <button className="w-10 h-10 bg-[#1A1C1C] group-hover:bg-orange-500 text-white rounded-xl flex items-center justify-center transition-all shadow-lg shadow-slate-100 group-hover:shadow-orange-100">
-            <ArrowRight className="w-5 h-5" />
-         </button>
+        <div className="text-right">
+          <div className="text-2xl font-black text-[#FF9800] leading-none">{coupon.discountValue || '25%'}</div>
+          <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mt-1">Savings</div>
+        </div>
+        <button className="w-10 h-10 bg-[#1A1C1C] group-hover:bg-orange-500 text-white rounded-xl flex items-center justify-center transition-all shadow-lg shadow-slate-100 group-hover:shadow-orange-100">
+          <ArrowRight className="w-5 h-5" />
+        </button>
       </div>
     </motion.div>
   );
@@ -123,7 +123,7 @@ export default function HotDealsGrid({ coupons, isLoading, onOpenDeal }: HotDeal
           <p className="text-sm font-bold text-slate-400 mb-4">
             Showing {visibleCoupons.length} of {coupons.length} hot deals
           </p>
-          <button 
+          <button
             onClick={showMore}
             className="flex items-center gap-2 px-8 py-3 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm"
           >

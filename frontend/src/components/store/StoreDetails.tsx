@@ -132,6 +132,7 @@ export default function StoreDetails() {
               </div>
               <img 
                 src="https://images.unsplash.com/photo-1589482238383-abb883556aa9?auto=format&fit=crop&w=200&q=80" 
+                alt="Wealth Tip illustration"
                 className="w-32 h-32 object-contain mix-blend-multiply" 
               />
             </div>
