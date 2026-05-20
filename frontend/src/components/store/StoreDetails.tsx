@@ -57,7 +57,7 @@ export default function StoreDetails() {
   useEffect(() => {
     if (coupons && coupons.length > 0) {
       const couponWithLogo = coupons.find((c: any) => c.brandLogo);
-      if (couponWithLogo) {
+      if (couponWithLogo && couponWithLogo.brandLogo) {
         const cleanSlug = storeName.toLowerCase().replace(/[^a-z0-9]/g, '');
         setCurrentLogo(getProxyLogoUrl(couponWithLogo.brandLogo, cleanSlug));
         setLogoError(false);

@@ -14,6 +14,10 @@ export interface Coupon {
   category: string;
   isVerified: boolean;
   type: 'COUPON' | 'DEAL' | 'CASHBACK';
+  brandLogo?: string;
+  bannerImage?: string;
+  store?: string;
+  storeName?: string;
 }
 
 interface CouponState {
