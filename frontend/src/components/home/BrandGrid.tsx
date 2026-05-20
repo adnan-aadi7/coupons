@@ -5,6 +5,7 @@ import { fetchStores } from '@/redux/slices/storeSlice';
 import Link from 'next/link';
 import { ArrowRight, Clock, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 // Blurred ghost brands shown while pending approval
 const GHOST_BRANDS = ['Amazon', 'Nike', 'Apple', 'Adidas', 'Samsung', 'Zara', 'H&M', 'Sephora'];
@@ -67,18 +68,17 @@ export default function BrandGrid() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
+                viewport={{ once: true, margin: '100px' }}
                 transition={{ delay: i * 0.05, duration: 0.4 }}
                 className="flex flex-col items-center"
               >
                 {/* Circular Logo Container */}
                 <div className="w-32 h-32 sm:w-40 sm:h-40 bg-[#E2E8F0]/30 rounded-full flex items-center justify-center mb-6 relative transition-all duration-500 group-hover:bg-[#E2E8F0]/60 group-hover:scale-105 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
                   <img
-                    src={(() => {
-                      const { getProxyLogoUrl } = require('@/utils/imageHelper');
-                      return getProxyLogoUrl(store.logoUrl, store.slug);
-                    })()}
+                    src={getProxyLogoUrl(store.logoUrl, store.slug)}
                     alt={store.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-1/2 h-1/2 object-contain transition-all duration-500"
                     onError={(e) => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${store.name}&background=cbd5e1&color=475569&bold=true` }}
                   />

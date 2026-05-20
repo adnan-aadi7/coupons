@@ -8,6 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ScannerProvider } from "@/context/ScannerContext";
 import GlobalScanner from "@/components/scanner/GlobalScanner";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ["latin"], variable: '--font-outfit' });
@@ -113,6 +114,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <GlobalScanner />
+            <Toaster position="top-right" reverseOrder={false} />
           </ScannerProvider>
         </StoreProvider>
       </body>

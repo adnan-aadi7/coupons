@@ -14,7 +14,26 @@ export default function DealsGrid({ coupons, isLoading, onOpenDeal }: DealsGridP
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {[1,2,3,4].map(i => <div key={i} className="h-80 bg-slate-50 rounded-[40px] animate-pulse" />)}
+        {[1,2,3,4].map(i => (
+          <div key={i} className="bg-white border border-slate-100 rounded-[40px] p-6 flex flex-col gap-4 animate-pulse h-80 shadow-sm justify-between w-full">
+            {/* Top area: Logo and verified pill */}
+            <div className="flex justify-between items-center w-full">
+              <div className="w-16 h-16 bg-slate-100 rounded-2xl shrink-0" />
+              <div className="h-4 bg-slate-100 rounded-full w-[25%]" />
+            </div>
+            {/* Middle area: category and title placeholders */}
+            <div className="space-y-3 flex-1 mt-4">
+              <div className="h-3.5 bg-slate-100 rounded-full w-[20%]" />
+              <div className="h-5 bg-slate-100 rounded-full w-[90%]" />
+              <div className="h-5 bg-slate-100 rounded-full w-[60%]" />
+            </div>
+            {/* Bottom area: discount tag and button */}
+            <div className="flex justify-between items-center pt-4 border-t border-slate-50 w-full mt-auto">
+              <div className="h-7 bg-slate-100 rounded-lg w-[25%]" />
+              <div className="h-9 bg-slate-100 rounded-full w-[35%]" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -34,6 +53,8 @@ export default function DealsGrid({ coupons, isLoading, onOpenDeal }: DealsGridP
             <img 
               src={coupon.image || `https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80`} 
               alt={coupon.title}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
             />
             
@@ -45,6 +66,8 @@ export default function DealsGrid({ coupons, isLoading, onOpenDeal }: DealsGridP
                     ? getProxyLogoUrl(coupon.brandLogo, coupon.store?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'shop') 
                     : `https://logo.clearbit.com/${coupon.store?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'shop'}.com`} 
                   alt={coupon.store}
+                  loading="lazy"
+                  decoding="async"
                   className="w-8 h-8 object-contain"
                   onError={(e: any) => e.target.src = 'https://www.google.com/s2/favicons?domain=shop.com&sz=64'}
                 />

@@ -10,6 +10,7 @@ import DealModal from '@/components/deals/DealModal';
 import CashbackOverlay from '@/components/deals/CashbackOverlay';
 import StoreSidebar from '@/components/store/StoreSidebar';
 import StoreDealCard from '@/components/store/StoreDealCard';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface StorePageClientProps {
   store: any;
@@ -64,7 +65,6 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
     if (activeSort === 'Highest Discount') {
       return (b.discountValue || 0) - (a.discountValue || 0);
     }
-    // For Popularity or Recommended, we can just use the default order from API
     return 0; 
   });
 
@@ -79,17 +79,13 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
 
   const domain = getBrandDomain(storeName);
   const fallbackLogoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-
-  const currentLogo = (() => {
-    const { getProxyLogoUrl } = require('@/utils/imageHelper');
-    return getProxyLogoUrl(store?.logoUrl, domain.replace('.com', ''));
-  })();
-
-  const handleLogoError = () => {
-    setLogoError(true);
-  };
-
+  const currentLogo = getProxyLogoUrl(store?.logoUrl, domain.replace('.com', ''));
+  const handleLogoError = () => setLogoError(true);
   const cashbackText = store?.cashbackRate ? `${store.cashbackRate}%` : "12.5%";
+
+  // Build the real tracking redirect URL for "Activate Now"
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
+  const storeVisitUrl = store?.slug ? `${API_URL}/stores/${store.slug}/visit` : (store?.affiliateUrl || store?.baseUrl || `https://www.${domain}`);
 
   return (
     <div className="bg-[#FFFFFF] min-h-screen font-['Manrope'] pt-24 pb-24">
@@ -105,7 +101,7 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
         storeName={storeName}
         logoUrl={logoError ? fallbackLogoUrl : currentLogo}
         cashbackRate={cashbackText}
-        redirectUrl={store?.affiliateUrl || store?.baseUrl || `https://www.${domain}`}
+        redirectUrl={storeVisitUrl}
       />
 
       <div className="max-w-[1300px] mx-auto px-4 sm:px-6 py-6 sm:py-12">
@@ -120,6 +116,10 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
             cashbackRate={cashbackText}
             isFavorite={isFavorite}
             onToggleFavorite={handleToggleFavorite}
+            totalClicks={store?.totalClicks || 0}
+            rating={store?.rating || 4.5}
+            couponCount={coupons.length}
+            storeDescription={store?.description}
           />
 
           <main className="lg:col-span-9">
@@ -176,17 +176,21 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
               )}
             </div>
 
-            {/* Bottom Tip */}
+            {/* Bottom Tip - Dynamic store description */}
             <div className="mt-20 flex flex-col md:flex-row items-center gap-10 bg-[#F9F9F9] rounded-[48px] p-10">
               <div className="flex-1 space-y-4">
                 <h4 className="text-xl font-black text-[#1A1C1C]">Wealth Tip</h4>
                 <p className="text-slate-500 font-medium leading-relaxed">
-                  Stack this store's cashback with your SmartSaver credit card to achieve up to 15.2% total returns on your purchase.
+                  {store?.description 
+                    ? `${store.description}. Combine this with SmartSaver cashback for maximum returns.`
+                    : `Stack this store's cashback with your SmartSaver credit card to achieve up to 15.2% total returns on your purchase.`
+                  }
                 </p>
               </div>
               <img 
                 src="https://images.unsplash.com/photo-1589482238383-abb883556aa9?auto=format&fit=crop&w=200&q=80" 
                 alt="Wealth Tip"
+                loading="lazy"
                 className="w-32 h-32 object-contain mix-blend-multiply" 
               />
             </div>

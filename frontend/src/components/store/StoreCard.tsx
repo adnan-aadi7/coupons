@@ -1,6 +1,7 @@
 import { Store } from '@/redux/slices/storeSlice';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface StoreCardProps {
   store: Store;
@@ -9,10 +10,7 @@ interface StoreCardProps {
 
 export default function StoreCard({ store, idx }: StoreCardProps) {
   // Use slug for logo if logoUrl is missing
-  const logoSource = (() => {
-    const { getProxyLogoUrl } = require('@/utils/imageHelper');
-    return getProxyLogoUrl(store.logoUrl, store.slug);
-  })();
+  const logoSource = getProxyLogoUrl(store.logoUrl, store.slug);
 
   return (
     <motion.div
@@ -32,6 +30,8 @@ export default function StoreCard({ store, idx }: StoreCardProps) {
             <img 
               src={logoSource} 
               alt={store.name} 
+              loading="lazy"
+              decoding="async"
               className="max-w-full max-h-full object-contain grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500"
               onError={(e: any) => {
                 if (e.target.src.includes('ui-avatars.com')) return;

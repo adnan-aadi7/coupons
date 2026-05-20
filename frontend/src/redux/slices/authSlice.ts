@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../api';
+import { toastSuccess, toastError } from '@/utils/toast';
 
 interface User {
   _id: string;
@@ -48,9 +49,12 @@ export const register = createAsyncThunk(
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
       }
+      toastSuccess('Account created successfully! Welcome to Coupons Mart.');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
+      const msg = error.response?.data?.message || 'Registration failed';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -63,9 +67,12 @@ export const login = createAsyncThunk(
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
       }
+      toastSuccess('Logged in successfully!');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      const msg = error.response?.data?.message || 'Login failed';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -93,9 +100,12 @@ export const updateProfile = createAsyncThunk(
   async (profileData: any, { rejectWithValue }) => {
     try {
       const response = await api.put('/auth/profile', profileData);
+      toastSuccess('Profile updated successfully!');
       return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update profile');
+      const msg = error.response?.data?.message || 'Failed to update profile';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -107,9 +117,12 @@ export const saveCoupon = createAsyncThunk(
       const state = getState() as { auth: AuthState };
       const token = state.auth.token || localStorage.getItem('token');
       const response = await api.post(`/auth/save-coupon/${couponId}`);
+      toastSuccess('Coupon saved successfully!');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to save coupon');
+      const msg = error.response?.data?.message || 'Failed to save coupon';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -119,9 +132,16 @@ export const toggleFavoriteStore = createAsyncThunk(
   async (storeId: string, { rejectWithValue }) => {
     try {
       const response = await api.post(`/stores/${storeId}/favorite`);
+      if (response.data.isFavorite) {
+        toastSuccess('Store added to favorites!');
+      } else {
+        toastSuccess('Store removed from favorites.');
+      }
       return response.data; // { success, isFavorite, message }
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to toggle favorite');
+      const msg = error.response?.data?.message || 'Failed to toggle favorite';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -159,9 +179,12 @@ export const requestWithdrawal = createAsyncThunk(
   async (withdrawalData: { amount: number; paypalEmail: string }, { rejectWithValue }) => {
     try {
       const response = await api.post('/withdrawal/request', withdrawalData);
+      toastSuccess('Withdrawal requested successfully!');
       return response.data.data; // { withdrawal, wallet }
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Withdrawal request failed');
+      const msg = error.response?.data?.message || 'Withdrawal request failed';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );
@@ -171,9 +194,12 @@ export const addPayoutMethod = createAsyncThunk(
   async (payoutData: any, { rejectWithValue }) => {
     try {
       const response = await api.post('/auth/payout-method', payoutData);
+      toastSuccess('Payout method added successfully!');
       return response.data.data; // The updated payoutMethods array
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to add payout method');
+      const msg = error.response?.data?.message || 'Failed to add payout method';
+      toastError(msg);
+      return rejectWithValue(msg);
     }
   }
 );

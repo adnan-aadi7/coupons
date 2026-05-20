@@ -4,7 +4,7 @@ const StoreSchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   logoUrl: { type: String },
-  bannerImage: { type: String }, // OG/hero banner image from the store website
+  bannerImage: { type: String },
   description: { type: String },
   baseUrl: { type: String },
   affiliateUrl: { type: String },
@@ -13,6 +13,7 @@ const StoreSchema = new mongoose.Schema({
   rating: { type: Number, default: 4.5 },
   verifiedStore: { type: Boolean, default: true },
   totalSavingsProvided: { type: Number, default: 0 },
+  totalClicks: { type: Number, default: 0 }, // Real engagement counter
 }, { timestamps: true });
 
 // Optimize directory listings & category filters

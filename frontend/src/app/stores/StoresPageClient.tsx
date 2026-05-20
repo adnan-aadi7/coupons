@@ -7,6 +7,7 @@ import { fetchStores } from '@/redux/slices/storeSlice';
 import { Search, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 export default function StoresPageClient() {
   const dispatch = useDispatch<AppDispatch>();
@@ -85,10 +86,7 @@ export default function StoresPageClient() {
                   {/* Circular Logo Container */}
                   <div className="w-32 h-32 sm:w-40 sm:h-40 bg-white rounded-full flex items-center justify-center mb-6 relative transition-all duration-500 group-hover:scale-105 shadow-[0_4px_20px_rgba(0,0,0,0.05)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-50">
                     <img
-                      src={(() => {
-                        const { getProxyLogoUrl } = require('@/utils/imageHelper');
-                        return getProxyLogoUrl(store.logoUrl, store.slug);
-                      })()}
+                      src={getProxyLogoUrl(store.logoUrl, store.slug)}
                       alt={store.name}
                       className="w-[60%] h-[60%] object-contain transition-all duration-500"
                       onError={(e) => {

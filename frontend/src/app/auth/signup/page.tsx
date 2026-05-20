@@ -40,16 +40,20 @@ export default function SignupPage() {
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { loading, error, isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/dashboard');
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
     }
     return () => {
       dispatch(clearError());
     };
-  }, [isAuthenticated, router, dispatch]);
+  }, [isAuthenticated, user, router, dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

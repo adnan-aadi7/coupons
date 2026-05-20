@@ -14,7 +14,11 @@ exports.getStores = async (req, res) => {
     if (category) query.category = category;
     if (search) query.name = { $regex: search, $options: 'i' };
 
-    const stores = await Store.find(query).sort({ name: 1 });
+    // Optimize payload size by excluding internal fields, and use .lean() for raw JSON performance
+    const stores = await Store.find(query)
+      .select('-createdAt -updatedAt -__v -bannerImage')
+      .sort({ name: 1 })
+      .lean();
 
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     res.status(200).json({
@@ -41,6 +45,29 @@ exports.getStoreBySlug = async (req, res) => {
 
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     res.status(200).json({ success: true, data: store });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Track a direct store visit / cashback activation (no specific coupon)
+ * @route GET /api/stores/:slug/visit
+ */
+exports.trackStoreVisit = async (req, res) => {
+  try {
+    const store = await Store.findOneAndUpdate(
+      { slug: req.params.slug, verifiedStore: true },
+      { $inc: { totalClicks: 1 } },
+      { new: true }
+    );
+
+    if (!store) {
+      return res.status(404).json({ success: false, message: 'Store not found' });
+    }
+
+    const redirectUrl = store.affiliateUrl || store.baseUrl || `https://www.${store.slug}.com`;
+    res.redirect(redirectUrl);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

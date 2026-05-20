@@ -34,6 +34,8 @@ function HotDealCard({ coupon, idx, onOpenDeal }: HotDealCardProps) {
         <img
           src={logoUrl}
           alt={brandName}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-110 duration-700"
           onError={() => setLogoUrl(`https://www.google.com/s2/favicons?domain=${cleanSlug}.com&sz=128`)}
         />
@@ -93,7 +95,22 @@ export default function HotDealsGrid({ coupons, isLoading, onOpenDeal }: HotDeal
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[1, 2, 3, 4, 5, 6].map(i => (
-          <div key={i} className="h-[130px] bg-slate-50 rounded-[32px] animate-pulse" />
+          <div key={i} className="flex flex-row items-center border border-slate-100 rounded-[32px] p-4 gap-4 bg-white animate-pulse h-[130px] shadow-sm w-full">
+            {/* Logo placeholder */}
+            <div className="w-20 h-20 bg-slate-100 rounded-2xl shrink-0" />
+            {/* Content area */}
+            <div className="flex-1 space-y-3 w-full">
+              <div className="flex justify-between items-center w-full">
+                <div className="h-3 bg-slate-100 rounded-full w-[35%]" />
+                <div className="h-3 bg-slate-100 rounded-full w-[20%]" />
+              </div>
+              <div className="h-4 bg-slate-100 rounded-full w-[80%]" />
+              <div className="flex justify-between items-center pt-1 w-full">
+                <div className="h-6 bg-slate-100 rounded-lg w-[25%]" />
+                <div className="h-7 bg-slate-100 rounded-full w-[30%]" />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     );

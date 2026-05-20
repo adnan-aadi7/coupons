@@ -27,10 +27,10 @@ export default function CouponsPage() {
   const isCouponsPage = pathname.includes('/coupons');
   const isDealsPage = pathname.includes('/deals') || pathname.includes('/hot-deals');
 
-  const heroTag = isCouponsPage 
-    ? "Exclusive Promo Codes & Coupons" 
-    : isDealsPage 
-      ? "Top Deals & Clearance Sales" 
+  const heroTag = isCouponsPage
+    ? "Exclusive Promo Codes & Coupons"
+    : isDealsPage
+      ? "Top Deals & Clearance Sales"
       : "Latest Offers & Deals";
 
   const heroTitle = isCouponsPage
@@ -72,29 +72,29 @@ export default function CouponsPage() {
       limit: 100 // fetch a healthy pool of offers to display
     }));
   }, [dispatch, activeCategory, isCouponsPage, isDealsPage]);
-  
+
   // Client-side filtering (handles local search bar and verified filter)
   const filteredCoupons = allCoupons.filter((c: any) => {
-    const matchesSearch = !searchQuery || 
-                         c.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         c.store?.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const matchesSearch = !searchQuery ||
+      c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.store?.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesVerified = !verifiedOnly || c.verifiedAt;
-    
+
     return matchesSearch && matchesVerified;
   });
 
   return (
     <div className="bg-[#F8F9FA] min-h-screen pt-32 pb-24">
-      <DealModal 
-        isOpen={!!selectedCoupon} 
-        onClose={() => setSelectedCoupon(null)} 
-        coupon={selectedCoupon} 
+      <DealModal
+        isOpen={!!selectedCoupon}
+        onClose={() => setSelectedCoupon(null)}
+        coupon={selectedCoupon}
       />
 
       <div className="max-w-[1400px] mx-auto px-4 md:px-8">
-        <CouponsHero 
-          onSearch={(q) => setSearchQuery(q)} 
+        <CouponsHero
+          onSearch={(q) => setSearchQuery(q)}
           value={searchQuery}
           tag={heroTag}
           title={heroTitle}
@@ -115,11 +115,10 @@ export default function CouponsPage() {
               <button
                 key={cat.slug}
                 onClick={() => setActiveCategory(cat.slug)}
-                className={`shrink-0 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all border ${
-                  activeCategory === cat.slug 
-                    ? 'bg-[#FF9800] text-white border-transparent shadow-md' 
-                    : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'
-                }`}
+                className={`shrink-0 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all border ${activeCategory === cat.slug
+                  ? 'bg-[#FF9800] text-white border-transparent shadow-md'
+                  : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'
+                  }`}
               >
                 {cat.name === 'All Categories' ? 'All' : cat.name}
               </button>
@@ -128,7 +127,7 @@ export default function CouponsPage() {
 
           <div className="flex items-center justify-between bg-white px-5 py-4 rounded-2xl border border-slate-100 shadow-sm">
             <span className="font-black text-[11px] uppercase tracking-widest text-slate-600">Verified Only</span>
-            <button 
+            <button
               onClick={() => setVerifiedOnly(!verifiedOnly)}
               className={`w-10 h-5 rounded-full relative transition-colors ${verifiedOnly ? 'bg-[#FF9800]' : 'bg-slate-200'}`}
             >
@@ -139,7 +138,7 @@ export default function CouponsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12">
           {/* Left Sidebar */}
-          <CouponsSidebar 
+          <CouponsSidebar
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
             verifiedOnly={verifiedOnly}
@@ -148,19 +147,19 @@ export default function CouponsPage() {
 
           {/* Main Coupons List */}
           <div className="lg:col-span-9">
-            <CouponsGrid 
-              coupons={filteredCoupons} 
-              isLoading={isLoading} 
+            <CouponsGrid
+              coupons={filteredCoupons}
+              isLoading={isLoading}
               onOpenDeal={setSelectedCoupon}
               itemType={isCouponsPage ? 'coupons' : 'deals'}
             />
-            
+
             {/* Load More Mockup */}
-            <div className="mt-16 flex flex-col items-center gap-4">
+            {/* <div className="mt-16 flex flex-col items-center gap-4">
               <button className="px-12 py-5 bg-white border border-slate-200 rounded-full font-black text-[12px] uppercase tracking-widest hover:border-[#FF9800] hover:text-[#FF9800] transition-all shadow-sm">
                 Load More Items
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

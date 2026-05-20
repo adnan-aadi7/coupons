@@ -59,7 +59,22 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
             {isLoading ? (
               // Skeletons
               [1, 2, 3, 4].map(i => (
-                <div key={i} className="flex flex-row items-center border border-slate-100 rounded-[24px] p-6 gap-6 bg-slate-50 animate-pulse h-[140px]" />
+                <div key={i} className="flex flex-col sm:flex-row items-center border border-slate-100 rounded-[24px] p-6 gap-6 bg-white animate-pulse h-auto sm:h-[140px] shadow-sm w-full">
+                  {/* Logo placeholder */}
+                  <div className="w-24 h-24 sm:w-[120px] sm:h-[90px] bg-slate-100 rounded-2xl shrink-0" />
+                  {/* Content area */}
+                  <div className="flex-1 w-full space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="h-3.5 bg-slate-100 rounded-full w-[25%]" />
+                      <div className="h-3.5 bg-slate-100 rounded-full w-[15%]" />
+                    </div>
+                    <div className="h-5 bg-slate-100 rounded-full w-[80%]" />
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="h-7 bg-slate-100 rounded-lg w-[20%]" />
+                      <div className="h-9 bg-slate-100 rounded-full w-[30%]" />
+                    </div>
+                  </div>
+                </div>
               ))
     ) : (deals?.data || deals)?.length > 0 ? (
       (deals?.data || deals).slice(0, 6).map((coupon: any, i: number) => {
@@ -81,7 +96,7 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
                     key={coupon._id}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: true, margin: "100px" }}
                     transition={{ delay: i * 0.05, duration: 0.4 }}
                     className="flex flex-row bg-white border border-slate-100 rounded-2xl sm:rounded-[32px] overflow-hidden group hover:shadow-xl hover:shadow-slate-100/50 transition-all duration-500 p-3 sm:p-0 gap-3 sm:gap-0 relative cursor-pointer"
                     onClick={(e) => handleDealClick(e, coupon)}
@@ -92,6 +107,8 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
                         <img 
                           src={getProxyLogoUrl(coupon.brandLogo, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))} 
                           alt={storeName} 
+                          loading="lazy"
+                          decoding="async"
                           className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
                           onError={(e) => {
                             e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(storeName)}&background=FF9800&color=fff&size=128&bold=true`;

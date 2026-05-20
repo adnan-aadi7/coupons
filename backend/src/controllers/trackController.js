@@ -63,9 +63,16 @@ exports.trackClick = async (req, res) => {
         estimatedCashback: (coupon.discountType === 'percentage' ? (coupon.discountValue / 20) : 0.5)
       });
 
-      // 4. Update popularity
+      // 4. Update coupon popularity
       coupon.popularity += 1;
       await coupon.save();
+
+      // 5. Update store totalClicks (fire-and-forget, non-blocking)
+      const Store = require('../models/Store');
+      Store.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${coupon.store}$`, 'i') } },
+        { $inc: { totalClicks: 1 } }
+      ).exec().catch(() => {}); // swallow error silently
     } else {
       console.log(`[Click Spam Blocked] Duplicate click suppressed for Coupon: ${couponId} (IP: ${clientIp})`);
     }

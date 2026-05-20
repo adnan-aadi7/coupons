@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { fetchStores } from '@/redux/slices/storeSlice';
 import { Search, ChevronDown } from 'lucide-react';
 import StoreExplorerSidebar from './StoreExplorerSidebar';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 import StoreCard from './StoreCard';
 export default function StoreExplorer() {
   const [activeCategory, setActiveCategory] = useState('All Stores');
@@ -76,10 +77,7 @@ export default function StoreExplorer() {
                     <div className="bg-[#1A1C1C] rounded-[40px] p-10 text-white relative overflow-hidden h-full group min-h-[400px] flex flex-col justify-end">
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
                       <img 
-                        src={(() => {
-                          const { getProxyLogoUrl } = require('@/utils/imageHelper');
-                          return getProxyLogoUrl(stores[0].logoUrl, stores[0].slug);
-                        })()} 
+                        src={getProxyLogoUrl(stores[0].logoUrl, stores[0].slug)} 
                         alt="Featured"
                         className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-[10s] group-hover:scale-110"
                       />
