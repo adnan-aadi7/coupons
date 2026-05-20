@@ -30,7 +30,11 @@ const CouponSchema = new mongoose.Schema({
   successRate: { type: Number, default: 100 },
 }, { timestamps: true });
 
-// Index for faster searching
+// Indexes for optimized searching and listings
 CouponSchema.index({ brand: 'text', category: 'text', store: 'text' });
+CouponSchema.index({ store: 1 });
+CouponSchema.index({ brand: 1 });
+CouponSchema.index({ category: 1 });
+CouponSchema.index({ isActive: 1 });
 
 module.exports = mongoose.model('Coupon', CouponSchema);

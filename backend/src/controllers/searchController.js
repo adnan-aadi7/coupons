@@ -63,6 +63,7 @@ exports.globalSearch = async (req, res) => {
       .limit(5)
       .lean();
 
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     return res.status(200).json({
       success: true,
       stores: storeResults.map(s => ({

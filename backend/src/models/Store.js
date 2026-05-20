@@ -15,4 +15,8 @@ const StoreSchema = new mongoose.Schema({
   totalSavingsProvided: { type: Number, default: 0 },
 }, { timestamps: true });
 
+// Optimize directory listings & category filters
+StoreSchema.index({ verifiedStore: 1 });
+StoreSchema.index({ category: 1 });
+
 module.exports = mongoose.model('Store', StoreSchema);

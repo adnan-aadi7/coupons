@@ -14,6 +14,17 @@ connectDB();
 
 const app = express();
 
+// Database connection assurance middleware for serverless environments
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection lost in request:', err.message);
+    res.status(500).json({ success: false, message: 'Database connection failed' });
+  }
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());

@@ -16,6 +16,7 @@ exports.getStores = async (req, res) => {
 
     const stores = await Store.find(query).sort({ name: 1 });
 
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     res.status(200).json({
       success: true,
       count: stores.length,
@@ -38,6 +39,7 @@ exports.getStoreBySlug = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Store not found' });
     }
 
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     res.status(200).json({ success: true, data: store });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
