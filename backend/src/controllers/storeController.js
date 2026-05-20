@@ -149,3 +149,57 @@ exports.fetchStoreBanners = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+/**
+ * Proxy images to bypass mixed-content (HTTP) and client-side adblockers.
+ * @route GET /api/stores/proxy-image
+ */
+exports.proxyImage = async (req, res) => {
+  try {
+    const imageUrl = req.query.url;
+    if (!imageUrl) {
+      return res.status(400).send('URL query parameter is required');
+    }
+
+    // Parse the URL
+    const parsedUrl = new URL(imageUrl);
+    const protocol = parsedUrl.protocol === 'https:' ? https : http;
+
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+      },
+      timeout: 10000
+    };
+
+    const proxyRequest = protocol.get(imageUrl, options, (proxyResponse) => {
+      // Handle redirects
+      if (proxyResponse.statusCode >= 300 && proxyResponse.statusCode < 400 && proxyResponse.headers.location) {
+        req.query.url = proxyResponse.headers.location;
+        return exports.proxyImage(req, res);
+      }
+
+      // If successful, pipe the response back
+      if (proxyResponse.statusCode === 200) {
+        res.setHeader('Content-Type', proxyResponse.headers['content-type'] || 'image/png');
+        res.setHeader('Cache-Control', 'public, max-age=604800'); // Cache for 7 days
+        proxyResponse.pipe(res);
+      } else {
+        res.status(proxyResponse.statusCode).send('Failed to fetch image');
+      }
+    });
+
+    proxyRequest.on('error', (err) => {
+      res.status(500).send('Error proxying image: ' + err.message);
+    });
+
+    proxyRequest.on('timeout', () => {
+      proxyRequest.destroy();
+      res.status(504).send('Image request timed out');
+    });
+
+  } catch (error) {
+    res.status(500).send('Invalid URL format');
+  }
+};

@@ -108,7 +108,10 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
                 {/* Left Image Area - Slightly Larger on Mobile */}
                 <div className="w-24 h-24 sm:w-[160px] sm:h-[130px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
                   <img 
-                    src={deal.brandLogo || logoUrl} 
+                    src={(() => {
+                      const { getProxyLogoUrl } = require('@/utils/imageHelper');
+                      return getProxyLogoUrl(deal.brandLogo || logoUrl, storeName.toLowerCase().replace(/\s+/g, ''));
+                    })()} 
                     alt={storeName} 
                     className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
                     onError={(e) => {

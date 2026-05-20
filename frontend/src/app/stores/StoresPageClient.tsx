@@ -85,16 +85,14 @@ export default function StoresPageClient() {
                   {/* Circular Logo Container */}
                   <div className="w-32 h-32 sm:w-40 sm:h-40 bg-white rounded-full flex items-center justify-center mb-6 relative transition-all duration-500 group-hover:scale-105 shadow-[0_4px_20px_rgba(0,0,0,0.05)] group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-50">
                     <img
-                      src={store.logoUrl || `https://logo.clearbit.com/${store.slug}.com`}
+                      src={(() => {
+                        const { getProxyLogoUrl } = require('@/utils/imageHelper');
+                        return getProxyLogoUrl(store.logoUrl, store.slug);
+                      })()}
                       alt={store.name}
                       className="w-[60%] h-[60%] object-contain transition-all duration-500"
                       onError={(e) => {
-                        const target = e.currentTarget;
-                        if (target.src.includes('clearbit')) {
-                          target.src = `https://ui-avatars.com/api/?name=${store.name}&background=f8fafc&color=64748b&bold=true&size=128`;
-                        } else {
-                          target.src = `https://logo.clearbit.com/${store.slug}.com`;
-                        }
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${store.name}&background=f8fafc&color=64748b&bold=true&size=128`;
                       }}
                     />
                   </div>

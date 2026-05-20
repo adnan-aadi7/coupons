@@ -76,7 +76,10 @@ export default function StoreExplorer() {
                     <div className="bg-[#1A1C1C] rounded-[40px] p-10 text-white relative overflow-hidden h-full group min-h-[400px] flex flex-col justify-end">
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
                       <img 
-                        src={stores[0].logoUrl || "https://images.unsplash.com/photo-1596462502278-27bfdc4033c8?auto=format&fit=crop&w=800&q=80"} 
+                        src={(() => {
+                          const { getProxyLogoUrl } = require('@/utils/imageHelper');
+                          return getProxyLogoUrl(stores[0].logoUrl, stores[0].slug);
+                        })()} 
                         alt="Featured"
                         className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-[10s] group-hover:scale-110"
                       />

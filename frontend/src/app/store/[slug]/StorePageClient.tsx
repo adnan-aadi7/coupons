@@ -72,8 +72,10 @@ export default function StorePageClient({ store, coupons, storeNameFallback }: S
   const domain = getBrandDomain(storeName);
   const fallbackLogoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
-  const apiLogo = store?.logoUrl ? store.logoUrl.replace(/^http:\/\//i, 'https://') : null;
-  const currentLogo = apiLogo || `https://logo.clearbit.com/${domain}`;
+  const currentLogo = (() => {
+    const { getProxyLogoUrl } = require('@/utils/imageHelper');
+    return getProxyLogoUrl(store?.logoUrl, domain.replace('.com', ''));
+  })();
 
   const handleLogoError = () => {
     setLogoError(true);

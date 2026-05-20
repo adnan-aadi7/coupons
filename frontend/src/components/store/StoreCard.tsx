@@ -9,7 +9,10 @@ interface StoreCardProps {
 
 export default function StoreCard({ store, idx }: StoreCardProps) {
   // Use slug for logo if logoUrl is missing
-  const logoSource = store.logoUrl || `https://icon.horse/icon/${store.slug}.com`;
+  const logoSource = (() => {
+    const { getProxyLogoUrl } = require('@/utils/imageHelper');
+    return getProxyLogoUrl(store.logoUrl, store.slug);
+  })();
 
   return (
     <motion.div

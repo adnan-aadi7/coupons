@@ -4,12 +4,10 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Zap, ShieldCheck } from 'lucide-react';
 
+import { getProxyLogoUrl } from '@/utils/imageHelper';
+
 function CashbackRow({ store, idx }: { store: any, idx: number }) {
-  const cleanLogoUrl = store.logoUrl 
-    ? store.logoUrl.replace(/^http:\/\//i, 'https://') 
-    : `https://logo.clearbit.com/${store.slug}.com`;
-    
-  const [logoUrl, setLogoUrl] = useState(cleanLogoUrl);
+  const [logoUrl, setLogoUrl] = useState(getProxyLogoUrl(store.logoUrl, store.slug));
   const fallbackLogoUrl = `https://www.google.com/s2/favicons?domain=${store.slug}.com&sz=128`;
 
   // Curated Unsplash photo IDs mapped to store categories for always-relevant images
