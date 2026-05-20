@@ -20,7 +20,6 @@ export function ScannerProvider({ children }: { children: ReactNode }) {
   const closeScanner = () => setIsScanning(false);
 
   const handleScanSuccess = (barcode: string) => {
-    setIsScanning(false);
     router.push(`/scan-result/${encodeURIComponent(barcode)}`);
   };
 

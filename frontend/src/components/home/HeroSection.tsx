@@ -184,7 +184,7 @@ export default function HeroSection({ onOpenScanner, deals = [], onOpenDeal }: H
   }, [dynamicDeals.length]);
 
   return (
-    <section className="relative bg-transparent mt-20 lg:mt-21 overflow-hidden flex items-center min-h-[500px] font-['Manrope'] ">
+    <section className="relative bg-transparent mt-20 lg:mt-21 overflow-visible flex items-center min-h-[500px] font-['Manrope'] ">
       <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-8 relative flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 py-8 lg:py-0">
 
         {/* Left Side: Typography & Search */}

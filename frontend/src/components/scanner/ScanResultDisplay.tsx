@@ -67,6 +67,7 @@ function getStatusColor(status: string): string {
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { searchByBarcode } from '@/redux/slices/couponSlice';
+import { useScanner } from '@/context/ScannerContext';
 
 export default function ScanResultDisplay() {
   const params = useParams();
@@ -74,6 +75,7 @@ export default function ScanResultDisplay() {
   const barcode = typeof params.barcode === 'string' ? decodeURIComponent(params.barcode) : '';
   
   const dispatch = useDispatch<AppDispatch>();
+  const { closeScanner } = useScanner();
   const { searchResults: product, loading, error } = useSelector((state: RootState) => state.coupons);
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeCopiedCoupon, setActiveCopiedCoupon] = useState<{ code: string; title: string; storeName: string; cashbackRate: number } | null>(null);
@@ -84,6 +86,12 @@ export default function ScanResultDisplay() {
       dispatch(searchByBarcode(barcode));
     }
   }, [barcode, dispatch]);
+
+  useEffect(() => {
+    if (!loading) {
+      closeScanner();
+    }
+  }, [loading, closeScanner]);
 
   if (loading) {
     return (
