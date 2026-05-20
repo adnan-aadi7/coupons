@@ -59,11 +59,10 @@ export default function HotDealsClient() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`shrink-0 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all border ${
-                  activeCategory === cat.id 
-                    ? 'bg-[#FF9800] text-white border-transparent shadow-md' 
-                    : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'
-                }`}
+                className={`shrink-0 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all border ${activeCategory === cat.id
+                  ? 'bg-[#FF9800] text-white border-transparent shadow-md'
+                  : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'
+                  }`}
               >
                 {cat.name === 'All Deals' ? 'All' : cat.name}
               </button>
@@ -72,7 +71,7 @@ export default function HotDealsClient() {
 
           <div className="flex items-center justify-between bg-white px-5 py-4 rounded-2xl border border-slate-100 shadow-sm">
             <span className="font-black text-[11px] uppercase tracking-widest text-slate-600">Verified Only</span>
-            <button 
+            <button
               onClick={() => setVerifiedOnly(!verifiedOnly)}
               className={`w-10 h-5 rounded-full relative transition-colors ${verifiedOnly ? 'bg-[#FF9800]' : 'bg-slate-200'}`}
             >
@@ -113,11 +112,11 @@ export default function HotDealsClient() {
               onOpenDeal={setSelectedCoupon}
             />
 
-            <div className="mt-20 flex justify-center">
+            {/* <div className="mt-20 flex justify-center">
               <button className="px-14 py-5 bg-white border border-slate-100 rounded-full font-black text-[12px] uppercase tracking-widest hover:border-[#FF9800] hover:text-[#FF9800] transition-all shadow-sm">
                 Unlock More Deals
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ const StoreSchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   logoUrl: { type: String },
+  bannerImage: { type: String }, // OG/hero banner image from the store website
   description: { type: String },
   baseUrl: { type: String },
   affiliateUrl: { type: String },

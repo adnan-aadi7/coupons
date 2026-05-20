@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, ArrowRight, Clock, Users } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Clock, Users, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 interface HotDealCardProps {
@@ -79,6 +79,11 @@ interface HotDealsGridProps {
 }
 
 export default function HotDealsGrid({ coupons, isLoading, onOpenDeal }: HotDealsGridProps) {
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  const showMore = () => {
+    setVisibleCount(prev => prev + 10);
+  };
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -97,11 +102,30 @@ export default function HotDealsGrid({ coupons, isLoading, onOpenDeal }: HotDeal
     );
   }
 
+  const visibleCoupons = coupons.slice(0, visibleCount);
+  const hasMore = coupons.length > visibleCount;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-      {coupons.map((coupon, i) => (
-        <HotDealCard key={coupon._id} coupon={coupon} idx={i} onOpenDeal={onOpenDeal} />
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {visibleCoupons.map((coupon, i) => (
+          <HotDealCard key={coupon._id} coupon={coupon} idx={i} onOpenDeal={onOpenDeal} />
+        ))}
+      </div>
+
+      {hasMore && (
+        <div className="flex flex-col items-center justify-center pt-8 pb-4">
+          <p className="text-sm font-bold text-slate-400 mb-4">
+            Showing {visibleCoupons.length} of {coupons.length} hot deals
+          </p>
+          <button 
+            onClick={showMore}
+            className="flex items-center gap-2 px-8 py-3 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm"
+          >
+            Load 10 More <ChevronDown className="w-5 h-5 text-[#FF9800]" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

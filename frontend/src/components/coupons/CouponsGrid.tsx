@@ -12,7 +12,7 @@ interface CouponsGridProps {
 }
 
 export default function CouponsGrid({ coupons, isLoading, onOpenDeal, itemType = 'deals' }: CouponsGridProps) {
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const handleDealClick = (e: React.MouseEvent, coupon: any) => {
     e.stopPropagation();
@@ -27,7 +27,7 @@ export default function CouponsGrid({ coupons, isLoading, onOpenDeal, itemType =
   };
 
   const showMore = () => {
-    setVisibleCount(prev => prev + 6);
+    setVisibleCount(prev => prev + 10);
   };
 
   if (isLoading) {
@@ -150,7 +150,19 @@ export default function CouponsGrid({ coupons, isLoading, onOpenDeal, itemType =
       </div>
 
       {/* Show More Button */}
-
+      {hasMore && (
+        <div className="flex flex-col items-center justify-center pt-8 pb-4">
+          <p className="text-sm font-bold text-slate-400 mb-4">
+            Showing {visibleCoupons.length} of {coupons.length} {itemType}
+          </p>
+          <button 
+            onClick={showMore}
+            className="flex items-center gap-2 px-8 py-3 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm"
+          >
+            Load 10 More <ChevronDown className="w-5 h-5 text-[#FF9800]" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

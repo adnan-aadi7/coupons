@@ -1,6 +1,6 @@
 "use client";
 
-import { Flame, TrendingUp, Zap, Search, Crown } from 'lucide-react';
+import { TrendingUp, Zap, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface HotDealsHeroProps {
@@ -9,94 +9,94 @@ interface HotDealsHeroProps {
 
 export default function HotDealsHero({ onSearch }: HotDealsHeroProps) {
   return (
-    <div className="relative overflow-hidden px-6 py-4 sm:px-12 sm:py-6 md:px-24 md:py-8 text-[#1A1C1C] border border-slate-100 rounded-[32px] sm:rounded-[64px] mb-8 sm:mb-12">
-      {/* Ethereal Glow Accents */}
-      <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-orange-500/5 rounded-full blur-[80px] sm:blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute -bottom-48 -left-48 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-red-500/5 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none opacity-50" />
+    <div className="relative overflow-hidden bg-white py-12 md:py-16 border-b border-slate-100 mb-12 text-center">
+      {/* Background Soft Ambient Light Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-amber-400/5 rounded-full blur-[80px] md:blur-[120px] pointer-events-none" />
+      <div className="absolute top-10 left-10 w-[200px] h-[200px] bg-[#E53935]/5 rounded-full blur-[60px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-[1100px] mx-auto text-center space-y-8 sm:space-y-12">
-        {/* Luxury Badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white shadow-xl shadow-slate-100 border border-slate-50"
-        >
-
-        </motion.div>
-
-        {/* Main Luxury Heading */}
-        <div className="space-y-4">
+      <div className="max-w-[900px] mx-auto px-6 relative z-10 space-y-6 md:space-y-8">
+        
+        {/* Main Luxury Heading (Centered, smaller size) */}
+        <div className="space-y-3">
           <motion.h1
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-[32px] sm:text-[64px] md:text-[100px] font-black leading-[0.95] tracking-tighter px-2"
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-[32px] sm:text-[48px] md:text-[60px] font-black text-[#1A1C1C] leading-[1.1] tracking-tighter"
           >
-            THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-[#FF9800] to-[#FF4500] animate-shimmer">ULTIMATE</span> <br />
-            DEAL VAULT.
+            THE HOTTEST <br className="sm:hidden" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E53935] via-[#FF5722] to-[#FF9800] animate-shimmer">DEALS UNLOCKED.</span>
           </motion.h1>
+          
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-slate-400 text-sm sm:text-xl md:text-2xl font-medium max-w-[800px] mx-auto leading-relaxed px-4"
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="text-slate-400 text-sm sm:text-base md:text-lg font-medium max-w-[620px] mx-auto leading-relaxed"
           >
-            Access a high-frequency selection of elite-tier discounts, <span className="hidden sm:inline"><br /></span>
-            manually curated for the world's most disciplined shoppers.
+            Gain instant access to high-frequency discount codes and flash sales. <br className="hidden sm:inline" />
+            Curated daily for premium savings on world-class global brands.
           </motion.p>
         </div>
 
-        {/* Premium Search Bar */}
+        {/* Premium Soft Search Bar (Centered) */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="relative max-w-[750px] mx-auto group px-2"
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="relative max-w-[620px] mx-auto group"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/10 to-[#FF4500]/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700]/10 to-[#FF4500]/10 rounded-[24px] blur-xl opacity-30 group-hover:opacity-75 transition-opacity duration-500 pointer-events-none" />
+          
           <div className="relative flex items-center">
-            <div className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 text-[#FF9800]">
-              <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#FF9800] transition-colors">
+              <Search className="w-5 h-5 sm:w-6 h-6" />
             </div>
             <input
               type="text"
-              placeholder="Search specific vault deals..."
+              placeholder="Search specific flash deals..."
               onChange={(e) => onSearch(e.target.value)}
-              className="w-full h-[60px] sm:h-[84px] bg-white rounded-2xl sm:rounded-[28px] pl-12 sm:pl-18 pr-16 sm:pr-48 border border-slate-100 shadow-2xl shadow-slate-200/50 focus:ring-2 focus:ring-[#FF9800]/20 transition-all text-sm sm:text-lg font-bold text-[#1A1C1C] placeholder:text-slate-300 outline-none"
+              className="w-full h-[60px] sm:h-[68px] bg-white rounded-2xl sm:rounded-[24px] pl-14 pr-16 sm:pr-40 border border-slate-100 focus:border-[#FF9800]/40 shadow-[0_15px_30px_rgba(0,0,0,0.02)] focus:shadow-[0_15px_35px_rgba(255,152,0,0.06)] focus:ring-4 focus:ring-[#FF9800]/5 transition-all text-sm sm:text-base font-bold text-[#1A1C1C] placeholder:text-slate-300 outline-none"
             />
-            <button className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 h-[44px] sm:h-[60px] px-4 sm:px-10 bg-[#1A1C1C] hover:bg-[#FF9800] text-white rounded-xl sm:rounded-[20px] font-black text-[11px] sm:text-[13px] uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2">
-              <span className="hidden sm:inline">Search Vault</span>
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 h-[46px] sm:h-[52px] px-6 sm:px-8 bg-[#1A1C1C] hover:bg-[#E53935] text-white rounded-xl sm:rounded-[18px] font-black text-[11px] sm:text-xs uppercase tracking-widest active:scale-95 transition-all flex items-center justify-center gap-2 border border-slate-100/50">
+              <span className="hidden sm:inline">Search</span>
               <Search className="w-4 h-4 sm:hidden" />
             </button>
           </div>
         </motion.div>
 
-        {/* Performance Indicators */}
+        {/* Performance Indicators (Centered) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="flex flex-row items-center justify-center gap-3 xs:gap-6 sm:gap-16 pt-4"
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="flex flex-row items-center justify-center gap-6 sm:gap-12 pt-2"
         >
-          <div className="flex items-center gap-2 xs:gap-4 sm:gap-5">
-            <div className="w-9 h-9 xs:w-12 xs:h-12 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 text-[#FFD700] shadow-xl shadow-slate-100 shrink-0">
-              <TrendingUp className="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7" />
+          {/* Stat 1 */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/[0.06] rounded-xl flex items-center justify-center border border-amber-500/10 text-[#FF9800] shrink-0">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="text-left">
-              <div className="text-[8px] xs:text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] xs:tracking-[0.2em] mb-0.5 xs:mb-1">Live Activity</div>
-              <div className="text-xs xs:text-lg sm:text-2xl font-black text-[#1A1C1C] tracking-tight whitespace-nowrap">12.4K <span className="text-slate-300 text-[8px] xs:text-xs sm:text-sm font-bold">ACTIVE</span></div>
+              <div className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-0.5">Live Activity</div>
+              <div className="text-xs sm:text-sm font-black text-[#1A1C1C] tracking-tight">
+                12.4K <span className="text-[#FF9800] text-[8px] font-bold ml-0.5">ACTIVE</span>
+              </div>
             </div>
           </div>
 
-          <div className="h-8 xs:h-10 sm:h-12 w-px bg-slate-200/60" />
+          <div className="h-6 w-px bg-slate-200" />
 
-          <div className="flex items-center gap-2 xs:gap-4 sm:gap-5">
-            <div className="w-9 h-9 xs:w-12 xs:h-12 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 text-orange-500 shadow-xl shadow-slate-100 shrink-0">
-              <Zap className="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 fill-current" />
+          {/* Stat 2 */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#E53935]/[0.06] rounded-xl flex items-center justify-center border border-[#E53935]/10 text-[#E53935] shrink-0">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
             </div>
             <div className="text-left">
-              <div className="text-[8px] xs:text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] xs:tracking-[0.2em] mb-0.5 xs:mb-1">Assets Saved</div>
-              <div className="text-xs xs:text-lg sm:text-2xl font-black text-[#1A1C1C] tracking-tight whitespace-nowrap">$42,500 <span className="text-slate-300 text-[8px] xs:text-xs sm:text-sm font-bold">TODAY</span></div>
+              <div className="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-0.5">Assets Saved</div>
+              <div className="text-xs sm:text-sm font-black text-[#1A1C1C] tracking-tight">
+                $42,500 <span className="text-emerald-500 text-[8px] font-bold ml-0.5">TODAY</span>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -110,7 +110,7 @@ export default function HotDealsHero({ onSearch }: HotDealsHeroProps) {
         }
         .animate-shimmer {
           background-size: 200% 200%;
-          animation: shimmer 12s ease infinite;
+          animation: shimmer 6s ease infinite;
         }
       `}} />
     </div>

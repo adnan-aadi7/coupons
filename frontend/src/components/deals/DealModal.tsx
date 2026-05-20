@@ -66,27 +66,27 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
           </div>
 
           {/* Content Section */}
-          <div className="px-10 pb-12 pt-8 text-center">
-            <h2 className="text-3xl font-black text-slate-900 leading-tight mb-3">
+          <div className="px-6 sm:px-10 pb-8 sm:pb-12 pt-6 sm:pt-8 text-center">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight mb-3">
               {coupon.title}
             </h2>
-            <p className="text-slate-500 font-semibold mb-10 max-w-xs mx-auto">
+            <p className="text-sm sm:text-base text-slate-500 font-semibold mb-8 sm:mb-10 max-w-xs mx-auto">
               Copy this code and apply it during checkout on {coupon.store}.
             </p>
 
             {coupon.code ? (
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Code Box */}
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full" />
-                  <div className="relative bg-slate-50 border-2 border-dashed border-primary p-2 rounded-[32px] flex items-center justify-between overflow-hidden">
-                    <span className="flex-1 text-2xl font-black font-mono tracking-[0.2em] text-slate-900 pl-6">
+                  <div className="relative bg-slate-50 border-2 border-dashed border-primary p-2 rounded-[24px] sm:rounded-[32px] flex flex-col sm:flex-row items-center justify-between overflow-hidden gap-2 sm:gap-0">
+                    <span className="flex-1 text-xl sm:text-2xl font-black font-mono tracking-[0.1em] sm:tracking-[0.2em] text-slate-900 pt-3 pb-1 sm:py-0 sm:pl-6 text-center sm:text-left w-full break-all px-2">
                       {coupon.code}
                     </span>
                     <button
                       onClick={handleCopy}
                       className={`
-                        flex items-center gap-2 px-8 py-4 rounded-[24px] font-black text-xs uppercase tracking-widest transition-all
+                        w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-[20px] sm:rounded-[24px] font-black text-xs uppercase tracking-widest transition-all
                         ${copied ? 'bg-green-500 text-white' : 'bg-primary text-white hover:bg-emerald-600 shadow-xl shadow-primary/20'}
                       `}
                     >
@@ -100,29 +100,29 @@ export default function DealModal({ isOpen, onClose, coupon }: DealModalProps) {
                   <a
                     href={coupon.link}
                     target="_blank"
-                    className="flex w-full items-center justify-center gap-3 bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all group shadow-lg shadow-slate-900/10"
+                    className="flex w-full items-center justify-center gap-3 bg-slate-900 text-white py-4 sm:py-5 rounded-[20px] sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all group shadow-lg shadow-slate-900/10"
                   >
                     Go to {coupon.store} Store
                     <ExternalLink className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <p className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">
                     Offer valid while supplies last. Exclusions apply.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="space-y-8">
-                <div className="bg-primary/5 border border-primary/20 p-8 rounded-[32px]">
-                  <p className="font-black text-2xl text-primary flex items-center justify-center gap-3">
-                    <Zap className="w-6 h-6 fill-current" />
+              <div className="space-y-6 sm:space-y-8">
+                <div className="bg-primary/5 border border-primary/20 p-6 sm:p-8 rounded-[24px] sm:rounded-[32px]">
+                  <p className="font-black text-xl sm:text-2xl text-primary flex items-center justify-center gap-2 sm:gap-3">
+                    <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
                     Deal Activated
                   </p>
-                  <p className="text-sm text-slate-500 font-semibold mt-2">No code required. Savings applied at checkout.</p>
+                  <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-2">No code required. Savings applied at checkout.</p>
                 </div>
                 <a
                   href={coupon.link}
                   target="_blank"
-                  className="flex w-full items-center justify-center gap-3 bg-primary text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-primary/20"
+                  className="flex w-full items-center justify-center gap-3 bg-primary text-white py-4 sm:py-5 rounded-[20px] sm:rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-primary/20"
                 >
                   Shop Now at {coupon.store}
                 </a>

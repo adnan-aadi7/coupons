@@ -1,7 +1,7 @@
 "use client";
 
 import CashbackHero from '@/components/cashback/CashbackHero';
-import CashbackHowItWorks from '@/components/cashback/CashbackHowItWorks';
+// import CashbackHowItWorks from '@/components/cashback/CashbackHowItWorks';
 import CashbackGrid from '@/components/cashback/CashbackGrid';
 
 export default function CashbackPageClient() {
@@ -17,7 +17,7 @@ export default function CashbackPageClient() {
         <div className="w-full h-px bg-slate-100 my-12" />
 
         {/* How it Works - Steps - MOVED DOWN */}
-        <CashbackHowItWorks />
+        {/* <CashbackHowItWorks /> */}
 
         {/* Call to Action */}
         <div className="mt-24 bg-[#1A1C1C] rounded-[64px] p-16 md:p-24 text-center space-y-8 relative overflow-hidden">
