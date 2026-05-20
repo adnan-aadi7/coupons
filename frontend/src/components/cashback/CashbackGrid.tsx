@@ -50,35 +50,37 @@ function CashbackRow({ store, idx, onActivate }: { store: any; idx: number; onAc
       viewport={{ once: true }}
       transition={{ delay: idx * 0.1, duration: 0.6 }}
       onClick={() => onActivate(store)}
-      className="bg-white rounded-[32px] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col sm:flex-row items-stretch gap-6 sm:gap-0 mb-6 lg:mb-8 hover:shadow-[0_15px_40px_rgb(0,0,0,0.08)] transition-all sm:h-[260px] cursor-pointer group relative overflow-hidden"
+      className="w-full bg-white rounded-3xl sm:rounded-[32px] p-3.5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-row sm:flex-row items-center sm:items-stretch gap-3 sm:gap-0 mb-4 sm:mb-6 lg:mb-8 hover:shadow-[0_15px_40px_rgb(0,0,0,0.08)] transition-all h-[110px] sm:h-[260px] cursor-pointer group relative overflow-hidden"
     >
       {/* Left Info Box */}
-      <div className="w-full sm:w-[45%] flex flex-col justify-between py-2 px-2 sm:px-6 z-10 relative sm:pr-14 text-left">
-        <div>
+      <div className="w-full sm:w-[45%] flex flex-row sm:flex-col items-center sm:items-stretch justify-between py-1 sm:py-2 px-1 sm:px-6 z-10 relative sm:pr-14 text-left gap-3 sm:gap-0 flex-1 min-w-0">
+        <div className="flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-0 flex-1 min-w-0">
           {/* Mobile-only Logo */}
-          <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center justify-center p-2.5 sm:hidden mb-4">
-            <img 
-              src={logoUrl} 
-              alt={store.name} 
-              className="max-w-full max-h-full object-contain mix-blend-multiply" 
+          <div className="w-16 h-16 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center justify-center p-2.5 sm:hidden shrink-0">
+            <img
+              src={logoUrl}
+              alt={store.name}
+              className="max-w-full max-h-full object-contain mix-blend-multiply"
               onError={() => setLogoUrl(fallbackLogoUrl)}
             />
           </div>
 
-          <h4 className="text-slate-500 font-bold text-[14px] mb-2">{store.name}</h4>
-          <h3 className="text-[32px] md:text-[38px] font-black text-[#1A1C1C] leading-none mb-3 tracking-tight">
-            {store.cashbackRate}% Cashback
-          </h3>
-          <p className="text-slate-500 font-medium text-[15px]">
-            Instead of {Math.max(1, Math.floor(store.cashbackRate * 0.7))}%
-          </p>
+          <div className="min-w-0 flex-1 sm:flex-none">
+            <h4 className="text-slate-500 font-bold text-[11px] sm:text-[14px] mb-0.5 sm:mb-2 truncate">{store.name}</h4>
+            <h3 className="text-xl sm:text-[38px] font-black text-[#1A1C1C] leading-none mb-0.5 sm:mb-3 tracking-tight">
+              {store.cashbackRate}% Cashback
+            </h3>
+            <p className="text-slate-500 font-medium text-[11px] sm:text-[15px] hidden sm:block">
+              Instead of {Math.max(1, Math.floor(store.cashbackRate * 0.7))}%
+            </p>
+          </div>
         </div>
 
-        <div className="mt-6 sm:mt-0">
-          <button 
-            className="inline-block px-10 py-4 bg-[#1e2338] text-white rounded-full font-bold text-[14px] hover:bg-[#111424] transition-all shadow-md active:scale-95 group-hover:bg-[#FF9800]"
+        <div className="shrink-0 sm:mt-0">
+          <button
+            className="inline-block px-5 py-2.5 sm:px-10 sm:py-4 bg-[#1e2338] text-white rounded-full font-bold text-[11px] sm:text-[14px] hover:bg-[#111424] transition-all shadow-md active:scale-95 group-hover:bg-[#FF9800]"
           >
-            Activate cashback
+            Activate
           </button>
         </div>
       </div>
@@ -87,20 +89,20 @@ function CashbackRow({ store, idx, onActivate }: { store: any; idx: number; onAc
       <div className="hidden sm:block flex-1 w-full h-[220px] sm:h-full relative mt-8 sm:mt-0">
         {/* Image Wrapper */}
         <div className="w-full h-full rounded-[24px] overflow-hidden">
-          <img 
-            src={bannerUrl} 
-            alt={store.name} 
+          <img
+            src={bannerUrl}
+            alt={store.name}
             className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
             onError={() => setBannerUrl(getCuratedBanner())}
           />
         </div>
-        
+
         {/* Overlapping Logo */}
         <div className="absolute top-[-30px] left-6 sm:top-1/2 sm:-translate-y-1/2 sm:left-[-30px] w-24 h-24 sm:w-[110px] sm:h-[110px] bg-white border border-slate-100 rounded-2xl sm:rounded-3xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] flex items-center justify-center p-3 z-20 bg-clip-padding">
-          <img 
-            src={logoUrl} 
-            alt={store.name} 
-            className="max-w-full max-h-full object-contain mix-blend-multiply" 
+          <img
+            src={logoUrl}
+            alt={store.name}
+            className="max-w-full max-h-full object-contain mix-blend-multiply"
             onError={() => setLogoUrl(fallbackLogoUrl)}
           />
         </div>
@@ -139,7 +141,7 @@ export default function CashbackGrid() {
   const hasMore = stores.length > visibleCount;
 
   return (
-    <div id="cashback-grid-section" className="max-w-[1200px] mx-auto py-12 md:py-24 px-4 sm:px-0">
+    <div id="cashback-grid-section" className="max-w-[1200px] mx-auto py-12 md:py-24  sm:px-0">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-12 md:mb-16 border-b border-slate-100 pb-10 gap-6">
         <div className="text-center sm:text-left space-y-2">
           <h2 className="text-[11px] md:text-[13px] font-black text-[#FF9800] uppercase tracking-[0.3em]">Curated Offers</h2>
@@ -151,26 +153,26 @@ export default function CashbackGrid() {
           </h3>
         </div>
         <div className="flex items-center gap-4 text-slate-400 text-xs md:text-sm font-bold">
-           Updated Live
+          Updated Live
         </div>
       </div>
 
       <div className="space-y-8 lg:space-y-12">
         {isLoading ? (
-          [1,2,3].map(i => (
+          [1, 2, 3].map(i => (
             <div key={i} className="h-64 bg-slate-50 rounded-[40px] animate-pulse" />
           ))
         ) : (
           visibleStores.map((store, i) => (
-            <CashbackRow 
-              key={store._id} 
-              store={store} 
-              idx={i} 
+            <CashbackRow
+              key={store._id}
+              store={store}
+              idx={i}
               onActivate={(s) => window.location.href = `/store/${s.slug}?activate=true`}
             />
           ))
         )}
-        
+
         {!isLoading && stores.length === 0 && (
           <div className="py-20 text-center bg-slate-50 rounded-[40px] border border-dashed border-slate-200">
             <p className="text-slate-400 font-bold italic">No cashback stores verified yet.</p>
@@ -188,7 +190,7 @@ export default function CashbackGrid() {
           </p>
           <button
             onClick={() => setVisibleCount(prev => prev + 5)}
-            className="flex items-center gap-2 px-10 py-4 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm cursor-pointer"
+            className="flex items-center gap-2 px-5 py-4 bg-white border-2 border-slate-200 rounded-full font-bold text-[#1A1C1C] hover:border-[#FF9800] hover:text-[#FF9800] transition-colors shadow-sm cursor-pointer"
           >
             Load 5 More Stores
           </button>
@@ -197,11 +199,11 @@ export default function CashbackGrid() {
 
       {!isLoading && !hasMore && stores.length > 0 && (
         <div className="mt-16 flex justify-center">
-          <a 
-            href="/stores" 
+          <a
+            href="/stores"
             className="w-full sm:w-auto px-14 py-6 bg-white border border-slate-100 rounded-full font-black text-[12px] uppercase tracking-widest hover:border-[#FF9800] hover:text-[#FF9800] transition-all text-center shadow-sm"
           >
-             Explore All Stores
+            Explore All Stores
           </a>
         </div>
       )}

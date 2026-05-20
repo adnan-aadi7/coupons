@@ -5,6 +5,7 @@ import { Search, Store, Tag, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import api from '@/redux/api';
+import { getProxyLogoUrl } from '@/utils/imageHelper';
 
 interface StoreResult { name: string; logo: string | null; slug: string; }
 interface DealResult { _id: string; title: string; store: string; discountValue?: number; discountType?: string; type: string; brandLogo?: string; }
@@ -132,7 +133,7 @@ export default function GlobalSearchBar({ className = '', inputClassName = '', p
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50 transition-colors group"
                   >
                     {store.logo
-                      ? <img src={store.logo} alt={store.name} className="w-8 h-8 object-contain rounded-lg bg-slate-50 p-1 shrink-0" />
+                      ? <img src={getProxyLogoUrl(store.logo, store.slug)} alt={store.name} className="w-8 h-8 object-contain rounded-lg bg-slate-50 p-1 shrink-0" />
                       : <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center shrink-0"><Store className="w-4 h-4 text-[#FF9800]" /></div>
                     }
                     <span className="font-semibold text-slate-700 text-sm group-hover:text-[#FF9800] transition-colors">{store.name}</span>
