@@ -21,7 +21,8 @@ export default function DealsPage() {
   useEffect(() => {
     dispatch(fetchCoupons({
       category: activeCategory !== 'All Deals' ? activeCategory.toLowerCase() : undefined,
-      sort: 'popularity'
+      sort: 'popularity',
+      type: 'deal'
     }));
   }, [dispatch, activeCategory]);
   

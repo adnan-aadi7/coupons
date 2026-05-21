@@ -24,7 +24,7 @@ export default function HotDealsClient() {
     dispatch(fetchCoupons({
       category: activeCategory !== 'all' ? activeCategory : undefined,
       sort: 'recent',
-      limit: 20
+      type: 'deal'
     }));
   }, [dispatch, activeCategory]);
 

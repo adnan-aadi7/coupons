@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Coupon = require('../models/Coupon');
+const Deal = require('../models/Deal');
 const Store = require('../models/Store');
 
 const ADMITAD_BASE_AUTH = process.env.ADMITAD_BASE_AUTH;
@@ -150,8 +151,6 @@ exports.syncAdmitadCoupons = async () => {
       
       if (!store) continue;
 
-      const existingCoupon = await Coupon.findOne({ admitadId: ac.id });
-      
       // Classify as Coupon (requires promo code) or Deal (direct link offer)
       const isRealCode = ac.promocode && ac.promocode.trim() !== '' && ac.promocode !== 'NOT REQUIRED';
       const type = isRealCode ? 'coupon' : 'deal';
@@ -176,13 +175,26 @@ exports.syncAdmitadCoupons = async () => {
         isActive: true
       };
 
-      if (existingCoupon) {
-        // Update existing
-        await Coupon.findByIdAndUpdate(existingCoupon._id, couponData);
+      if (type === 'coupon') {
+        const existingCoupon = await Coupon.findOne({ admitadId: ac.id });
+        if (existingCoupon) {
+          await Coupon.findByIdAndUpdate(existingCoupon._id, couponData);
+        } else {
+          await Coupon.create(couponData);
+          syncedCount++;
+        }
+        // Ensure it doesn't exist as a deal
+        await Deal.deleteOne({ admitadId: ac.id });
       } else {
-        // Create new
-        await Coupon.create(couponData);
-        syncedCount++;
+        const existingDeal = await Deal.findOne({ admitadId: ac.id });
+        if (existingDeal) {
+          await Deal.findByIdAndUpdate(existingDeal._id, couponData);
+        } else {
+          await Deal.create(couponData);
+          syncedCount++;
+        }
+        // Ensure it doesn't exist as a coupon
+        await Coupon.deleteOne({ admitadId: ac.id });
       }
     }
 

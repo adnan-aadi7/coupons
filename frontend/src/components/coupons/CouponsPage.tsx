@@ -16,7 +16,8 @@ export default function CouponsPage() {
   const categoryParam = searchParams.get('category');
   const qParam = searchParams.get('q');
 
-  const [activeCategory, setActiveCategory] = useState('all');
+  // Initialize directly from URL param — no extra render needed
+  const [activeCategory, setActiveCategory] = useState(categoryParam?.toLowerCase() || 'all');
   const [searchQuery, setSearchQuery] = useState(qParam || '');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<any>(null);
@@ -45,31 +46,24 @@ export default function CouponsPage() {
       ? "Direct discount links and promotional offers automatically applied at checkout."
       : "Access thousands of verified coupon codes and exclusive discounts from top retailers around the globe.";
 
-  // Sync category query parameter from URL to component state
+  // Sync category from URL param changes (e.g. user navigates between categories)
   useEffect(() => {
-    if (categoryParam) {
-      setActiveCategory(categoryParam.toLowerCase());
-    } else {
-      setActiveCategory('all');
-    }
+    const newCat = categoryParam?.toLowerCase() || 'all';
+    setActiveCategory(newCat);
   }, [categoryParam]);
 
-  // Sync search query parameter from URL to component state
+  // Sync search query param
   useEffect(() => {
-    if (qParam) {
-      setSearchQuery(qParam);
-    } else if (qParam === null) {
-      setSearchQuery('');
-    }
+    if (qParam !== null) setSearchQuery(qParam || '');
   }, [qParam]);
 
+  // Fetch whenever activeCategory changes — uses latest value immediately
   useEffect(() => {
     const typeParam = isCouponsPage ? 'coupon' : isDealsPage ? 'deal' : undefined;
     dispatch(fetchCoupons({
       category: activeCategory !== 'all' ? activeCategory : undefined,
       sort: 'recent',
-      type: typeParam,
-      limit: 100 // fetch a healthy pool of offers to display
+      type: typeParam
     }));
   }, [dispatch, activeCategory, isCouponsPage, isDealsPage]);
 

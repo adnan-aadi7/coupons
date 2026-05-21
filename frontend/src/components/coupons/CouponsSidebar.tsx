@@ -12,10 +12,16 @@ interface CouponsSidebarProps {
 const CATEGORIES = [
   { name: 'All Categories', slug: 'all' },
   { name: 'Fashion', slug: 'fashion' },
+  { name: 'Services', slug: 'services' },
+  { name: 'Online Shopping', slug: 'shopping' },
+  { name: 'Travel', slug: 'travel' },
+  { name: 'Education', slug: 'education' },
+  { name: 'Computing', slug: 'computing' },
+  { name: 'Food & Dining', slug: 'food' },
+  { name: 'Gaming', slug: 'gaming' },
   { name: 'Electronics', slug: 'electronics' },
-  { name: 'Home & Garden', slug: 'home-garden' },
-  { name: 'Beauty', slug: 'beauty' },
-  { name: 'Travel', slug: 'travel' }
+  { name: 'Kids', slug: 'kids' },
+  { name: 'Books', slug: 'books' },
 ];
 
 export default function CouponsSidebar({ 

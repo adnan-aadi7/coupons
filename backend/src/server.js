@@ -36,6 +36,7 @@ app.use('/api/withdrawal', require('./routes/withdrawalRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
+app.use('/api/deals', require('./routes/dealRoutes'));
 app.use('/api/track', require('./routes/trackRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/affiliate', require('./routes/affiliateRoutes'));

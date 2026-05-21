@@ -112,7 +112,14 @@ export default function Navbar() {
                 {/* Middle: Desktop Nav Links */}
                 <div className="hidden lg:flex items-center gap-4 xl:gap-8">
                   {navLinks.map((link) => {
-                    const isActive = pathname === link.href;
+                    const isActive = 
+                      // Categories link is active when on /categories OR on /coupons?category=...
+                      link.href === '/categories'
+                        ? pathname === '/categories' || (pathname === '/coupons' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('category'))
+                        // Coupons link only active on bare /coupons (no category param)
+                        : link.href === '/coupons'
+                          ? pathname === '/coupons' && (typeof window === 'undefined' || !new URLSearchParams(window.location.search).has('category'))
+                          : pathname === link.href;
                     return (
                       <Link
                         key={link.name}
@@ -229,7 +236,12 @@ export default function Navbar() {
                 <div className="flex flex-col gap-2">
                   <span className="text-[10px] font-black text-[#FF9800] uppercase tracking-[0.2em] px-3 mb-2">Navigation</span>
                   {navLinks.map((item) => {
-                    const isActive = pathname === item.href;
+                    const isActive = 
+                      item.href === '/categories'
+                        ? pathname === '/categories' || (pathname === '/coupons' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('category'))
+                        : item.href === '/coupons'
+                          ? pathname === '/coupons' && (typeof window === 'undefined' || !new URLSearchParams(window.location.search).has('category'))
+                          : pathname === item.href;
                     // Icon Map
                     let IconComponent = Home;
                     if (item.name === 'Stores') IconComponent = Store;

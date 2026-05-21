@@ -6,8 +6,15 @@ const couponService = require('../services/couponService');
  */
 exports.getCoupons = async (req, res) => {
   try {
-    const { brand, category, store, sort, type } = req.query;
-    const coupons = await couponService.getCoupons({ brand, category, store, sort, type });
+    const { brand, category, store, sort, type, limit } = req.query;
+    const coupons = await couponService.getCoupons({
+      brand,
+      category,
+      store,
+      sort,
+      type,
+      limit: limit ? parseInt(limit, 10) : undefined
+    });
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=59');
     res.status(200).json({
       success: true,
