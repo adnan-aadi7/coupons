@@ -24,15 +24,15 @@ const CATEGORIES = [
   { name: 'Books', slug: 'books' },
 ];
 
-export default function CouponsSidebar({ 
-  activeCategory, 
-  onCategoryChange, 
-  verifiedOnly, 
-  onVerifiedToggle 
+export default function CouponsSidebar({
+  activeCategory,
+  onCategoryChange,
+  verifiedOnly,
+  onVerifiedToggle
 }: CouponsSidebarProps) {
   return (
     <aside className="hidden lg:block lg:col-span-3 space-y-8 sticky top-32 self-start">
-      
+
       {/* Search Filter Header */}
       <div className="flex items-center gap-3 px-2">
         <Filter className="w-5 h-5 text-[#FF9800]" />
@@ -42,16 +42,15 @@ export default function CouponsSidebar({
       {/* Category List */}
       <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-6 px-2">Categories</h4>
-        <div className="space-y-1.5">
+        <div className="space-y-.5">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.slug}
               onClick={() => onCategoryChange(cat.slug)}
-              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-black text-[13px] transition-all ${
-                activeCategory === cat.slug 
-                  ? 'bg-[#FF9800] text-white shadow-lg shadow-orange-100' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-[#1A1C1C]'
-              }`}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-black text-[13px] transition-all ${activeCategory === cat.slug
+                ? 'bg-[#FF9800] text-white shadow-lg shadow-orange-100'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-[#1A1C1C]'
+                }`}
             >
               {cat.name}
               {activeCategory === cat.slug && <Check className="w-4 h-4" />}
@@ -63,13 +62,12 @@ export default function CouponsSidebar({
       {/* Verification Filter */}
       <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 mb-6 px-2">Trust Center</h4>
-        <button 
+        <button
           onClick={onVerifiedToggle}
-          className={`w-full flex items-center justify-between px-4 py-4 rounded-2xl border-2 transition-all ${
-            verifiedOnly 
-              ? 'border-[#FF9800] bg-orange-50/50 text-[#FF9800]' 
-              : 'border-slate-50 text-slate-500 hover:border-slate-100'
-          }`}
+          className={`w-full flex items-center justify-between px-4 py-4 rounded-2xl border-2 transition-all ${verifiedOnly
+            ? 'border-[#FF9800] bg-orange-50/50 text-[#FF9800]'
+            : 'border-slate-50 text-slate-500 hover:border-slate-100'
+            }`}
         >
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4" />
