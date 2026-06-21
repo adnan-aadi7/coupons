@@ -228,6 +228,17 @@ exports.addPayoutMethod = async (req, res, next) => {
   }
 };
 
+// @desc    Google OAuth callback
+// @route   GET /api/auth/google/callback
+// @access  Public
+exports.googleCallback = async (req, res, next) => {
+  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET || 'secret123', {
+    expiresIn: process.env.JWT_EXPIRE || '30d',
+  });
+
+  res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}`);
+};
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token

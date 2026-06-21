@@ -136,9 +136,9 @@ export default function LoginPage() {
 
             {/* Social Logins */}
             <div className="flex items-center justify-center gap-6">
-              <button className="w-[74px] h-[74px] border border-slate-100 rounded-lg flex items-center justify-center bg-white hover:bg-slate-50 hover:shadow-md transition-all">
+              <a href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}/api/auth/google`} className="w-[74px] h-[74px] border border-slate-100 rounded-lg flex items-center justify-center bg-white hover:bg-slate-50 hover:shadow-md transition-all">
                 <GoogleLogo />
-              </button>
+              </a>
               <button className="w-[74px] h-[74px] border border-slate-100 rounded-lg flex items-center justify-center bg-white hover:bg-slate-50 hover:shadow-md transition-all">
                 <FacebookLogo />
               </button>

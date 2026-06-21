@@ -75,24 +75,21 @@ export default function ScanResultDisplay() {
   const barcode = typeof params.barcode === 'string' ? decodeURIComponent(params.barcode) : '';
   
   const dispatch = useDispatch<AppDispatch>();
-  const { closeScanner, stopScanLoading } = useScanner();
+  const { stopScanLoading } = useScanner();
   const { searchResults: product, loading, error } = useSelector((state: RootState) => state.coupons);
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeCopiedCoupon, setActiveCopiedCoupon] = useState<{ code: string; title: string; storeName: string; cashbackRate: number } | null>(null);
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://coupons-52jf.vercel.app/api';
 
   useEffect(() => {
+    stopScanLoading();
+  }, [stopScanLoading]);
+
+  useEffect(() => {
     if (barcode) {
       dispatch(searchByBarcode(barcode));
     }
   }, [barcode, dispatch]);
-
-  useEffect(() => {
-    if (!loading) {
-      closeScanner();
-      stopScanLoading();
-    }
-  }, [loading, closeScanner, stopScanLoading]);
 
   if (loading) {
     return (

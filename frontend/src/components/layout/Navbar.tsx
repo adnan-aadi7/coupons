@@ -69,7 +69,7 @@ export default function Navbar() {
                 className="w-full flex items-center gap-3 lg:hidden"
               >
                 <div className="flex-1">
-                  <GlobalSearchBar 
+                  <GlobalSearchBar
                     placeholder="Search stores, coupons, deals..."
                   />
                 </div>
@@ -112,7 +112,7 @@ export default function Navbar() {
                 {/* Middle: Desktop Nav Links */}
                 <div className="hidden lg:flex items-center gap-4 xl:gap-8">
                   {navLinks.map((link) => {
-                    const isActive = 
+                    const isActive =
                       // Categories link is active when on /categories OR on /coupons?category=...
                       link.href === '/categories'
                         ? pathname === '/categories' || (pathname === '/coupons' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('category'))
@@ -236,7 +236,7 @@ export default function Navbar() {
                 <div className="flex flex-col gap-2">
                   <span className="text-[10px] font-black text-[#FF9800] uppercase tracking-[0.2em] px-3 mb-2">Navigation</span>
                   {navLinks.map((item) => {
-                    const isActive = 
+                    const isActive =
                       item.href === '/categories'
                         ? pathname === '/categories' || (pathname === '/coupons' && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('category'))
                         : item.href === '/coupons'
@@ -255,11 +255,10 @@ export default function Navbar() {
                         key={item.name}
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
-                        className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all group ${
-                          isActive 
-                            ? 'bg-[#FF9800]/5 text-[#EA580C]' 
-                            : 'text-slate-700 hover:bg-slate-50 hover:text-[#EA580C]'
-                        }`}
+                        className={`flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold tracking-tight transition-all group ${isActive
+                          ? 'bg-[#FF9800]/5 text-[#EA580C]'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-[#EA580C]'
+                          }`}
                       >
                         <div className="flex items-center gap-3.5">
                           <IconComponent className={`w-5 h-5 ${isActive ? 'text-[#FF9800]' : 'text-slate-400 group-hover:text-[#FF9800] transition-colors'}`} />

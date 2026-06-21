@@ -2,12 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-const cron = require('node-cron');
-const connectDB = require('./config/db');
-const admitadService = require('./services/admitadService');
+const session = require('express-session');
 
 // Load environment variables
 dotenv.config();
+
+const passport = require('./config/passport');
+const cron = require('node-cron');
+const connectDB = require('./config/db');
+const admitadService = require('./services/admitadService');
 
 // Connect to Database
 connectDB();
@@ -29,6 +32,13 @@ app.use(async (req, res, next) => {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'mysecret',
+  resave: false,
+  saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
