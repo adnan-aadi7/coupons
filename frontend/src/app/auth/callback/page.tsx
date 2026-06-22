@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { getMe } from '@/redux/slices/authSlice';
 
-export default function AuthCallbackPage() {
+function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -28,5 +28,17 @@ export default function AuthCallbackPage() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-8 h-8 border-2 border-[#FF6A13] border-t-transparent rounded-full animate-spin" />
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-8 h-8 border-2 border-[#FF6A13] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <CallbackHandler />
+    </Suspense>
   );
 }
