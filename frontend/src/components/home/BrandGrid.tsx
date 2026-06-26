@@ -23,7 +23,7 @@ export default function BrandGrid() {
   // ── LOADING STATE ──────────────────────────
   if (loading && stores.length === 0) {
     return (
-      <section className="py-16 border-b border-slate-100">
+      <section className="py-10 border-b border-slate-100">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex items-center justify-center py-20">
           <div className="w-8 h-8 border-4 border-[#FF9800] border-t-transparent rounded-full animate-spin" />
         </div>

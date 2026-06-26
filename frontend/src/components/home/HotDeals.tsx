@@ -15,7 +15,7 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
   // If no deals have resolved yet
   if (isLoading && deals.length === 0) {
     return (
-      <section className="py-20 bg-white relative overflow-hidden">
+      <section className="py-12 bg-white relative overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[400px] bg-slate-50 animate-pulse rounded-[32px]" />
       </section>
     );
@@ -30,7 +30,7 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
   if (displayedDeals.length === 0) return null;
 
   return (
-    <section className="relative py-20 lg:py-28 bg-white overflow-hidden font-['Manrope'] border-t border-slate-100">
+    <section className="relative py-12 lg:py-10 bg-white overflow-hidden font-['Manrope'] border-t border-slate-100">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 relative z-10">
 
         {/* Header */}
@@ -94,8 +94,8 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
             }
 
             const cleanStoreName = storeName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const logoUrl = deal.brandLogo 
-              ? getProxyLogoUrl(deal.brandLogo, cleanStoreName) 
+            const logoUrl = deal.brandLogo
+              ? getProxyLogoUrl(deal.brandLogo, cleanStoreName)
               : `https://logo.clearbit.com/${cleanStoreName}.com`;
 
             return (
@@ -110,10 +110,10 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
               >
                 {/* Left Image Area - Slightly Larger on Mobile */}
                 <div className="w-24 h-24 sm:w-[160px] sm:h-[130px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
-                  <img 
-                    src={getProxyLogoUrl(deal.brandLogo || logoUrl, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))} 
-                    alt={storeName} 
-                    className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
+                  <img
+                    src={getProxyLogoUrl(deal.brandLogo || logoUrl, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))}
+                    alt={storeName}
+                    className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
                     onError={(e) => {
                       e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(storeName)}&background=FF9800&color=fff&size=128&bold=true`;
                     }}
@@ -158,7 +158,7 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
 
                   {/* Button - Compact positioning */}
                   <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5">
-                    <button 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         if (onOpenDeal) onOpenDeal(deal);

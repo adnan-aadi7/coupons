@@ -122,13 +122,14 @@ export default function ScanResultDisplay() {
     );
   }
 
-  const pricedRetailers = product.retailers.filter((r: any) => r.price > 0);
+  const retailers = product.retailers || [];
+  const pricedRetailers = retailers.filter((r: any) => r.price > 0);
   const cheapestRetailer = pricedRetailers.length > 0
     ? pricedRetailers.reduce((min: any, r: any) => r.price < min.price ? r : min, pricedRetailers[0])
-    : (product.retailers.length > 0 ? product.retailers[0] : null);
+    : (retailers.length > 0 ? retailers[0] : null);
 
   const bestPrice = (cheapestRetailer && cheapestRetailer.price > 0) ? cheapestRetailer.price : null;
-  const hasMore = product.retailers.length > visibleCount;
+  const hasMore = retailers.length > visibleCount;
 
   return (
     <div className="min-h-screen bg-[#F9F9F9] font-['Manrope']">
@@ -383,18 +384,18 @@ export default function ScanResultDisplay() {
         )}
 
         {/* Retailer Comparison */}
-        {product.retailers.length > 0 && (
+        {retailers.length > 0 && (
           <div className="mt-12">
             <div className="flex items-end justify-between mb-8">
               <div>
                 <h2 className="text-[22px] font-extrabold text-[#1A1C1C] tracking-tight">Partner Price Comparison</h2>
-                <p className="text-slate-400 text-[14px]">Showing {Math.min(visibleCount, product.retailers.length)} of {product.retailers.length} authorized retailers.</p>
+                <p className="text-slate-400 text-[14px]">Showing {Math.min(visibleCount, retailers.length)} of {retailers.length} authorized retailers.</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
-                {product.retailers.slice(0, visibleCount).map((retailer: any, index: number) => {
+                {retailers.slice(0, visibleCount).map((retailer: any, index: number) => {
                   const isCheapest = cheapestRetailer?.name === retailer.name;
                   const isSoldOut = ['Sold Out', 'Out of Stock'].includes(retailer.status);
                   return (
@@ -510,7 +511,7 @@ export default function ScanResultDisplay() {
                     <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                   </div>
                   <span className="text-[12px] text-slate-400 font-bold uppercase tracking-widest">
-                    {product.retailers.length - visibleCount} more available
+                    {retailers.length - visibleCount} more available
                   </span>
                 </button>
               </div>
@@ -518,7 +519,7 @@ export default function ScanResultDisplay() {
           </div>
         )}
 
-        {product.retailers.length === 0 && (
+        {retailers.length === 0 && (
           <div className="bg-white rounded-[24px] p-8 text-center border border-slate-100 shadow-sm">
             <p className="text-slate-400 font-semibold text-[15px]">No retailer pricing data available for this product.</p>
             <p className="text-slate-300 text-[13px] mt-1">Try searching manually on Amazon, Walmart, or eBay.</p>

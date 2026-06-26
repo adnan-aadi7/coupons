@@ -57,7 +57,7 @@ const CATEGORIES = [
 
 export default function CategoryExplorer() {
   return (
-    <section className="py-16 bg-[#F8F9FA]">
+    <section className="py-10 bg-[#F8F9FA]">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
 
         {/* Header */}

@@ -28,7 +28,7 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-white border-t border-slate-100">
+    <section className="py-10 lg:py-5 bg-white border-t border-slate-100">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 space-y-12">
 
         <div className="space-y-8">
@@ -76,8 +76,8 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
                   </div>
                 </div>
               ))
-    ) : (deals?.data || deals)?.length > 0 ? (
-      (deals?.data || deals).slice(0, 6).map((coupon: any, i: number) => {
+            ) : (deals?.data || deals)?.length > 0 ? (
+              (deals?.data || deals).slice(0, 6).map((coupon: any, i: number) => {
                 const isExpiringSoon = coupon.expiryDate && (new Date(coupon.expiryDate).getTime() - new Date().getTime()) < (48 * 60 * 60 * 1000);
                 const verifiedLabel = coupon.verifiedAt ? `Verified` : 'Verified';
                 const storeName = coupon.store || coupon.brand || 'Brand Offer';
@@ -104,12 +104,12 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
                     {/* Left Image Area - Slightly Larger on Mobile */}
                     <div className="w-24 h-24 sm:w-[160px] sm:h-[130px] shrink-0 bg-slate-50/50 flex items-center justify-center p-3 sm:p-4 rounded-2xl sm:rounded-none border border-slate-100 sm:border-0 sm:border-r relative overflow-hidden self-center sm:self-auto">
                       {coupon.brandLogo ? (
-                        <img 
-                          src={getProxyLogoUrl(coupon.brandLogo, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))} 
-                          alt={storeName} 
+                        <img
+                          src={getProxyLogoUrl(coupon.brandLogo, storeName.toLowerCase().replace(/[^a-z0-9]/g, ''))}
+                          alt={storeName}
                           loading="lazy"
                           decoding="async"
-                          className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform" 
+                          className="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
                           onError={(e) => {
                             e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(storeName)}&background=FF9800&color=fff&size=128&bold=true`;
                           }}
@@ -160,7 +160,7 @@ export default function TopCoupons({ activeCategory, onCategoryChange, isLoading
 
                       {/* Button - Compact positioning */}
                       <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5">
-                        <button 
+                        <button
                           className={`px-2.5 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl font-black text-[9px] sm:text-[12px] transition-all shadow-md active:scale-95 flex items-center justify-center ${coupon.code
                             ? 'bg-[#FF9800] text-white hover:bg-[#F97316]'
                             : 'bg-slate-100 text-[#1A1C1C] hover:bg-slate-200'

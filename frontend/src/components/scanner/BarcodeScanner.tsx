@@ -29,11 +29,6 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
     let html5Qrcode: any = null;
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      // Permission check
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      stream.getTracks().forEach(track => track.stop());
-
       const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
       const isMobile = window.innerWidth < 640;
       const regionId = isMobile ? "barcode-video-region-mobile" : "barcode-video-region-desktop";
@@ -41,73 +36,45 @@ export default function BarcodeScanner({ onScanSuccess, onClose }: BarcodeScanne
       const videoRegion = document.getElementById(regionId);
       if (!videoRegion) throw new Error("Scanner region not found");
 
-      // Clear any existing elements to prevent double camera view
       videoRegion.innerHTML = "";
 
       html5Qrcode = new Html5Qrcode(regionId);
       scannerRef.current = html5Qrcode;
 
-      const container = containerRef.current;
-      const width = container?.clientWidth || 480;
-      const height = container?.clientHeight || 270;
-
-      // Adaptive qrbox for 1D barcodes (wider and taller for better capture)
-      const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
-        const isMobile = viewfinderWidth < 600;
-        const width = isMobile ? viewfinderWidth * 0.9 : viewfinderWidth * 0.8;
-        const height = isMobile ? 200 : 250; // Increased height for easier alignment
-        return { width, height };
-      };
-
       await html5Qrcode.start(
-        { 
-          facingMode: "environment",
-        },
+        { facingMode: "environment" },
         {
-          fps: 30,
-          qrbox: qrboxFunction,
-          aspectRatio: width / height,
+          fps: 60,
+          qrbox: (vw: number, vh: number) => ({
+            width: vw * 0.95,
+            height: vh * 0.6,
+          }),
           disableFlip: true,
           videoConstraints: {
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
+            width: { ideal: 640 },
+            height: { ideal: 480 },
             facingMode: "environment"
           },
           formatsToSupport: [
-            Html5QrcodeSupportedFormats.QR_CODE,
             Html5QrcodeSupportedFormats.EAN_13,
             Html5QrcodeSupportedFormats.EAN_8,
             Html5QrcodeSupportedFormats.UPC_A,
             Html5QrcodeSupportedFormats.UPC_E,
-            Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
             Html5QrcodeSupportedFormats.CODE_128,
             Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.CODE_93,
-            Html5QrcodeSupportedFormats.ITF,
-            Html5QrcodeSupportedFormats.DATA_MATRIX,
-            Html5QrcodeSupportedFormats.AZTEC,
-            Html5QrcodeSupportedFormats.PDF_417,
-            Html5QrcodeSupportedFormats.CODABAR
           ],
           experimentalFeatures: {
             useBarCodeDetectorIfSupported: true,
           },
         },
         (decodedText: string) => {
-          // Success Feedback
-          if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-            navigator.vibrate([100, 50, 100]); 
-          }
-          
-          setLoading(true);
           isRunningRef.current = false;
-          
-          // Show "Searching" state for a moment to give user feedback
-          setTimeout(() => {
-            html5Qrcode?.stop().then(() => {
-              onScanSuccess(decodedText);
-            }).catch(() => onScanSuccess(decodedText));
-          }, 800); // Increased delay for better feedback
+          html5Qrcode?.stop().catch(() => {});
+          if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+            navigator.vibrate(30);
+          }
+          setLoading(true);
+          onScanSuccess(decodedText);
         },
         () => { }
       );

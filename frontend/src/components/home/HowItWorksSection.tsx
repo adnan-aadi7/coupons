@@ -36,7 +36,7 @@ const STEPS = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-24 lg:py-32 bg-[#F8F9FA] relative overflow-hidden">
+    <section className="py-14 lg:py-5 bg-[#F8F9FA] relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF9800]/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
@@ -45,7 +45,7 @@ export default function HowItWorksSection() {
 
         {/* Section Header */}
         <div className="text-center mb-20 space-y-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -56,8 +56,8 @@ export default function HowItWorksSection() {
               Simple Steps
             </span>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -66,8 +66,8 @@ export default function HowItWorksSection() {
           >
             How Coupons Mart Works
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -80,7 +80,7 @@ export default function HowItWorksSection() {
 
         {/* 3 Step Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          
+
           {/* Connector Line in Desktop */}
           <div className="hidden md:block absolute top-1/2 left-1/6 right-1/6 h-[2px] bg-gradient-to-r from-orange-200/50 via-blue-200/50 to-emerald-200/50 -translate-y-[80px] z-0" />
 
@@ -127,7 +127,7 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Dynamic CTA at the bottom */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
