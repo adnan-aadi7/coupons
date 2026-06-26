@@ -12,22 +12,13 @@ interface HotDealsProps {
 }
 
 export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps) {
-  // If no deals have resolved yet
-  if (isLoading && deals.length === 0) {
-    return (
-      <section className="py-12 bg-white relative overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[400px] bg-slate-50 animate-pulse rounded-[32px]" />
-      </section>
-    );
-  }
-
   // Filter for hot deals/exclusive clearance deals
-  const hotDeals = deals.filter(d => d.exclusive || d.promoCode === 'NOT REQUIRED').slice(0, 3);
+  const hotDeals = (deals || []).filter(d => d.exclusive || d.promoCode === 'NOT REQUIRED').slice(0, 3);
 
   // If no custom flagged exclusive deals, fall back to trending database coupons
-  const displayedDeals = hotDeals.length > 0 ? hotDeals : deals.slice(0, 3);
+  const displayedDeals = hotDeals.length > 0 ? hotDeals : (deals || []).slice(0, 3);
 
-  if (displayedDeals.length === 0) return null;
+  const showSkeleton = isLoading;
 
   return (
     <section className="relative py-12 lg:py-10 bg-white overflow-hidden font-['Manrope'] border-t border-slate-100">
@@ -56,7 +47,29 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
 
         {/* Symmetrical Horizontal Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-12">
-          {displayedDeals.map((deal, i) => {
+          {showSkeleton ? (
+            [1, 2, 3, 4].map(i => (
+              <div key={i} className="flex flex-col sm:flex-row items-center border border-slate-100 rounded-[24px] p-6 gap-6 bg-white animate-pulse h-auto sm:h-[140px] shadow-sm w-full">
+                <div className="w-24 h-24 sm:w-[120px] sm:h-[90px] bg-slate-100 rounded-2xl shrink-0" />
+                <div className="flex-1 w-full space-y-4">
+                  <div className="flex justify-between items-center">
+                    <div className="h-3.5 bg-slate-100 rounded-full w-[25%]" />
+                    <div className="h-3.5 bg-slate-100 rounded-full w-[15%]" />
+                  </div>
+                  <div className="h-5 bg-slate-100 rounded-full w-[80%]" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-7 bg-slate-100 rounded-lg w-[20%]" />
+                    <div className="h-9 bg-slate-100 rounded-full w-[30%]" />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : displayedDeals.length === 0 ? (
+            <div className="col-span-full py-24 text-center border-2 border-dashed border-slate-100 rounded-[32px] text-slate-400 font-['Manrope'] font-bold">
+              No hot deals right now. Check back later!
+            </div>
+          ) : (
+            displayedDeals.map((deal, i) => {
             const storeName = deal.store || deal.storeName || 'Brand Offer';
 
             // Smart discount parser to produce gorgeous, huge dynamic typography
@@ -171,7 +184,7 @@ export default function HotDeals({ deals, isLoading, onOpenDeal }: HotDealsProps
                 </div>
               </motion.div>
             );
-          })}
+          }))}
         </div>
 
       </div>
